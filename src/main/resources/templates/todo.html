@@ -5,19 +5,27 @@
   <title>ToDoリスト</title>
 </head>
 <body>
-  <h1 th:text="${date} + ' のToDoリスト'"></h1>
+  <h1 th:text="${todoModel.date} + ' のToDoリスト'"></h1>
 
-  <p th:if="${todos.isEmpty()}">まだToDoはありません</p>
+    <!-- 検索機能関係-->
+  <form th:action="@{/todo}" method="get">
+    <input type="hidden" name="date" th:value="${todoModel.date}">
+    <input type="text" name="keyword" th:value="${keyword}" placeholder="キーワードで検索">
+    <button type="submit">検索</button>
+    <a th:href="@{/todo(date=${todoModel.date})}">クリア</a>
+  </form>
+
+  <p th:if="${todoModel.todos.isEmpty()}">まだToDoはありません</p>
   <ul>
-	<li th:each="todo : ${todos}">
-	  <a th:href="@{/todo/detail(id=${todo.id})}"
-	     th:text="${todo.title}">
-	  </a>
-	  <a th:href="@{/todo/delete-confirm(id=${todo.id}, date=${date})}">🗑 削除</a>
-	</li>
+    <li th:each="todo : ${todoModel.todos}">
+      <a th:href="@{/todo/detail(id=${todo.id})}"
+         th:text="${todo.title}">
+      </a>
+      <a th:href="@{/todo/delete-confirm(id=${todo.id}, date=${todoModel.date})}">🗑 削除</a>
+    </li>
   </ul>
 
-  <a th:href="@{/todo/new(date=${date})}">＋ 新規作成</a><br>
+  <a th:href="@{/todo/new(date=${todoModel.date})}">＋ 新規作成</a><br>
   <a href="/">← カレンダーに戻る</a>
 </body>
 </html>

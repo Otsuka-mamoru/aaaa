@@ -9,8 +9,8 @@
 <body>
 
 	<!-- 年月ナビゲーション -->
-	<a th:href="@{/(year=${prevYear}, month=${prevMonth})}">← 前月</a>
-	<h1 th:text="${year} + '年' + ${month} + '月'">	</h1>
+	<a th:href="@{/(year=${calendarModel.prevYear}, month=${calendarModel.prevMonth})}">← 前月</a>
+	<h1 th:text="${calendarModel.year} + '年' + ${calendarModel.month} + '月'"></h1>
 	<a th:href="@{/(year=${nextYear}, month=${nextMonth})}">次月 →</a>
 
 	<div style="display:flex; gap:40px; align-items:flex-start;">
@@ -25,28 +25,30 @@
 				<th>金</th>
 				<th>土</th>
 			</tr>
-			<tr th:each="week : ${weeks}">
+			<tr th:each="week : ${calendarModel.weeks}">
 				<td th:each="day : ${week}">
 					<a th:if="${day != null}" th:href="@{/todo(date=${day})}"
-						th:text="${day.substring(day.lastIndexOf('-') + 1)}" </a>
+						th:text="${day.substring(day.lastIndexOf('-') + 1)}"</a>
 				</td>
 			</tr>
 			</table>
 
 		<div>
-			<h2 th:text="${todayStr} + ' の ToDo'"></h2>
-			<p th:if="${todayTodos.isEmpty()}">今日のToDoはありません</p>
+			<h2 th:text="${calendarModel.todayStr} + ' の ToDo'"></h2>
+			<p th:if="${calendarModel.todayTodos.isEmpty()}">今日のToDoはありません</p>
 			<ul>
-				<li th:each="todo : ${todayTodos}">
-					<a th:href="@{/todo/detail(id=${todo.id})}" th:text="${todo.title}">
-					</a>
+				<li th:each="todo : ${calendarModel.todayTodos}">
+				    <a th:href="@{/todo/detail(id=${todo.id})}" th:text="${todo.title}">
+				    </a>
 				</li>
 			</ul>
-			<a th:href="@{/todo(date=${todayStr})}">今日のToDoリストへ →</a>
+			<a th:href="@{/todo(date=${calendarModel.todayStr})}">今日のToDoリストへ →</a>
+			
 		</div>
 
 	</div>
-
+	<!-- リマインダー確認 -->
+	<a href="/reminder">リマインドメモ設定</a>
 
 </body>
 

@@ -5,20 +5,20 @@
   <title>新規作成</title>
 </head>
 <body>
-  <h1 th:text="${date} + ' の新規ToDo作成'"></h1>
+  <h1 th:text="${createTaskForm.date} + ' の新規ToDo作成'"></h1>
 
-  <form action="/todo/create" method="post">
-    <input type="hidden" name="date" th:value="${date}">
+  <form th:action="@{/todo/create}" th:object="${createTaskForm}" method="post">
+    <input type="hidden" th:field="*{date}">
 
     <label>タイトル</label><br>
-    <input type="text" name="title"><br><br>
+    <input type="text" th:field="*{title}"><br>
+    <p th:if="${#fields.hasErrors('title')}" style="color:red">＊登録にはタイトルが必要です</p>
 
     <label>メモ</label><br>
-    <textarea name="memo"></textarea><br><br>
+    <textarea th:field="*{memo}"></textarea><br><br>
 
     <button type="submit">保存</button>
-    <a th:href="@{/todo(date=${date})}">← 戻る</a>
+    <a th:href="@{/todo(date=${createTaskForm.date})}">← 戻る</a>
   </form>
-
 </body>
 </html>

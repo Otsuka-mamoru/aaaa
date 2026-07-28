@@ -38,4 +38,8 @@ public class TaskRepositoryImpl implements TaskRepository {
     public void delete(int id) {
         taskMapper.delete(id);
     }
+    @Override
+    public List<Todo> search(String keyword) {
+        return taskMapper.search(keyword);
+    }
 }

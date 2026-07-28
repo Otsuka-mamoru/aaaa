@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
-import org.springframework.context.annotation.Primary;
+
 import jp.levtech.rookie.tutorial.model.Todo;
 import jp.levtech.rookie.tutorial.repository.mybatis.TaskMapper;
 
@@ -43,7 +43,6 @@ public class DatabaseTaskRepositoryImpl implements TaskRepository {
     public Todo findById(int id) {
         return taskMapper.findById(id);
     }
-
     /**
      * タスクをデータベースに登録する。
      */
@@ -51,7 +50,6 @@ public class DatabaseTaskRepositoryImpl implements TaskRepository {
     public void register(Todo todo) {
         taskMapper.register(todo);
     }
-
     /**
      * データベース上のタスクを更新する。
      */
@@ -59,12 +57,18 @@ public class DatabaseTaskRepositoryImpl implements TaskRepository {
     public void update(Todo todo) {
         taskMapper.update(todo);
     }
-
     /**
      * データベース上のタスクを削除する。
      */
     @Override
     public void delete(int id) {
         taskMapper.delete(id);
+    }
+    /**
+     * キーワードで検索する。
+     */
+    @Override
+    public List<Todo> search(String keyword) {
+        return taskMapper.search(keyword);
     }
 }

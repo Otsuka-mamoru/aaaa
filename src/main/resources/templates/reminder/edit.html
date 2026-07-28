@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>リマインドメモ編集</title>
+</head>
+<body>
+  <h1>リマインドメモ編集</h1>
+
+  <form th:action="@{/reminder/update}" th:object="${reminderForm}" method="post">
+    <input type="hidden" name="id" th:value="${id}">
+
+    <label>タイトル</label><br>
+    <input type="text" th:field="*{title}"><br>
+    <p th:if="${#fields.hasErrors('title')}" style="color:red">＊タイトルは必須です</p>
+
+    <label>メモ</label><br>
+    <textarea th:field="*{memo}"></textarea><br><br>
+
+    <label>繰り返す曜日</label><br>
+    <input type="checkbox" th:field="*{mon}">月
+    <input type="checkbox" th:field="*{tue}">火
+    <input type="checkbox" th:field="*{wed}">水
+    <input type="checkbox" th:field="*{thu}">木
+    <input type="checkbox" th:field="*{fri}">金
+    <input type="checkbox" th:field="*{sat}">土
+    <input type="checkbox" th:field="*{sun}">日<br><br>
+
+    <button type="submit">更新</button>
+    <a href="/reminder">← 戻る</a>
+  </form>
+</body>
+</html>

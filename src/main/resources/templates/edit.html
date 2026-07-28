@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>ToDo編集</title>
+</head>
+<body>
+  <h1>ToDo編集</h1>
+
+  <form th:action="@{/todo/update}" th:object="${updateTaskForm}" method="post">
+    <input type="hidden" th:field="*{date}">
+    <input type="hidden" name="id" th:value="${id}">
+
+    <label>タイトル</label><br>
+    <input type="text" th:field="*{title}"><br>
+    <p th:if="${#fields.hasErrors('title')}" th:errors="*{title}" style="color:red"></p>
+
+    <label>メモ</label><br>
+    <textarea th:field="*{memo}"></textarea><br><br>
+
+    <button type="submit">更新</button>
+    <a th:href="@{/todo(date=${updateTaskForm.date})}">← 戻る</a>
+  </form>
+  <a th:href="@{/todo/edit(id=${todo.id})}">編集</a>
+</body>
+</html>

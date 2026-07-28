@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>リマインドメモ一覧</title>
+</head>
+<body>
+  <h1>リマインドメモ一覧</h1>
+
+  <a href="/reminder/new">＋ 新規作成</a><br>
+  <a href="/">← カレンダーに戻る</a>
+
+  <p th:if="${reminders.isEmpty()}">リマインドメモはありません</p>
+
+  <table border="1">
+    <tr>
+      <th>タイトル</th>
+      <th>メモ</th>
+      <th>月</th><th>火</th><th>水</th><th>木</th><th>金</th><th>土</th><th>日</th>
+      <th>操作</th>
+    </tr>
+    <tr th:each="reminder : ${reminders}">
+      <td th:text="${reminder.title}"></td>
+      <td th:text="${reminder.memo}"></td>
+      <td th:text="${reminder.mon} ? '✓' : ''"></td>
+      <td th:text="${reminder.tue} ? '✓' : ''"></td>
+      <td th:text="${reminder.wed} ? '✓' : ''"></td>
+      <td th:text="${reminder.thu} ? '✓' : ''"></td>
+      <td th:text="${reminder.fri} ? '✓' : ''"></td>
+      <td th:text="${reminder.sat} ? '✓' : ''"></td>
+      <td th:text="${reminder.sun} ? '✓' : ''"></td>
+      <td>
+        <a th:href="@{/reminder/edit(id=${reminder.id})}">編集</a>
+        <form th:action="@{/reminder/delete}" method="post" style="display:inline">
+          <input type="hidden" name="id" th:value="${reminder.id}">
+          <button type="submit">削除</button>
+        </form>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

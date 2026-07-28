@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jp.levtech.rookie.tutorial.repository.mybatis.ReminderMapper">
+
+    <select id="findAll" resultType="jp.levtech.rookie.tutorial.model.Reminder">
+        SELECT id, title, memo, mon, tue, wed, thu, fri, sat, sun
+        FROM reminders
+    </select>
+
+    <select id="findById" resultType="jp.levtech.rookie.tutorial.model.Reminder">
+        SELECT id, title, memo, mon, tue, wed, thu, fri, sat, sun
+        FROM reminders
+        WHERE id = #{id}
+    </select>
+
+    <insert id="register">
+        INSERT INTO reminders (title, memo, mon, tue, wed, thu, fri, sat, sun)
+        VALUES (#{title}, #{memo}, #{mon}, #{tue}, #{wed}, #{thu}, #{fri}, #{sat}, #{sun})
+    </insert>
+
+    <update id="update">
+        UPDATE reminders
+        SET title = #{title},
+            memo = #{memo},
+            mon = #{mon},
+            tue = #{tue},
+            wed = #{wed},
+            thu = #{thu},
+            fri = #{fri},
+            sat = #{sat},
+            sun = #{sun}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="delete">
+        DELETE FROM reminders WHERE id = #{id}
+    </delete>
+
+</mapper>

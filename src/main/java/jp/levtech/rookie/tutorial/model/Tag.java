@@ -7,10 +7,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Todo {
+public class Tag {
     private int id;
-    private String date;
-    private String title;
-    private String memo;
-    private Integer tagId; // NULL許容なのでIntegerを使う
+    private String name;
+    private String color;
 }

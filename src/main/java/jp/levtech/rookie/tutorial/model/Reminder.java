@@ -7,10 +7,15 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Todo {
+public class Reminder {
     private int id;
-    private String date;
     private String title;
     private String memo;
-    private Integer tagId; // NULL許容なのでIntegerを使う
+    private boolean mon;
+    private boolean tue;
+    private boolean wed;
+    private boolean thu;
+    private boolean fri;
+    private boolean sat;
+    private boolean sun;
 }
