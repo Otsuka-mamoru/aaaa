@@ -19,9 +19,11 @@ import jp.levtech.rookie.tutorial.controller.form.CreateTaskForm;
 import jp.levtech.rookie.tutorial.controller.form.UpdateTaskForm;
 import jp.levtech.rookie.tutorial.model.CalendarModel;
 import jp.levtech.rookie.tutorial.model.Reminder;
+import jp.levtech.rookie.tutorial.model.Tag;
 import jp.levtech.rookie.tutorial.model.Todo;
 import jp.levtech.rookie.tutorial.model.TodoModel;
 import jp.levtech.rookie.tutorial.repository.ReminderRepository;
+import jp.levtech.rookie.tutorial.repository.TagRepository;
 import jp.levtech.rookie.tutorial.repository.TaskRepository;
 
 @Controller
@@ -29,22 +31,21 @@ public class TodoController {
 
     private final TaskRepository taskRepository;
     private final ReminderRepository reminderRepository;
-    /**
-     * リポジトリ
-     */
+    private final TagRepository tagRepository;
+
     public TodoController(TaskRepository taskRepository,
-            ReminderRepository reminderRepository) {
+            ReminderRepository reminderRepository,
+            TagRepository tagRepository) {
         this.taskRepository = taskRepository;
         this.reminderRepository = reminderRepository;
+        this.tagRepository = tagRepository;
     }
 
     @GetMapping("/")
-    /**
-     * カレンダー（基本画面）設定
-     */
     public String calender(
             @RequestParam(defaultValue = "0") int year,
             @RequestParam(defaultValue = "0") int month,
+            @RequestParam(required = false) Integer tagId,
             Model model) {
 
         LocalDate today = LocalDate.now();
@@ -62,26 +63,40 @@ public class TodoController {
 
         List<Todo> todayTodos = taskRepository.findByDate(todayStr);
 
+        List<String> taggedDates = new ArrayList<>();
+        if (tagId != null) {
+            List<Todo> taggedTodos = taskRepository.findByTagId(tagId);
+            for (Todo todo : taggedTodos) {
+                taggedDates.add(todo.getDate());
+            }
+        }
+
         CalendarModel calendarModel = new CalendarModel(
                 year, month,
                 prev.getYear(), prev.getMonthValue(),
                 next.getYear(), next.getMonthValue(),
                 buildCalendar(year, month),
-                todayStr, todayTodos
+                todayStr, todayTodos, tagId
         );
 
         model.addAttribute("calendarModel", calendarModel);
+        model.addAttribute("tags", tagRepository.findAll());
+        model.addAttribute("taggedDates", taggedDates);
+        model.addAttribute("selectedTagId", tagId);
         return "Calender";
     }
- // 
+
     @GetMapping("/todo")
     public String todo(@RequestParam String date,
             @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) Integer tagId,
             Model model) {
 
         List<Todo> todos;
         if (keyword != null && !keyword.isEmpty()) {
             todos = taskRepository.search("%" + keyword + "%");
+        } else if (tagId != null) {
+            todos = taskRepository.findByTagId(tagId);
         } else {
             todos = taskRepository.findByDate(date);
         }
@@ -89,13 +104,17 @@ public class TodoController {
         TodoModel todoModel = new TodoModel(date, todos);
         model.addAttribute("todoModel", todoModel);
         model.addAttribute("keyword", keyword);
+        model.addAttribute("tagId", tagId);
+        model.addAttribute("tags", tagRepository.findAll());
         return "todo";
     }
+
     @GetMapping("/todo/new")
     public String newTodo(@RequestParam String date, Model model) {
         CreateTaskForm createTaskForm = new CreateTaskForm();
         createTaskForm.setDate(date);
         model.addAttribute("createTaskForm", createTaskForm);
+        model.addAttribute("tags", tagRepository.findAll());
         return "create";
     }
 
@@ -103,16 +122,22 @@ public class TodoController {
     public String createTodo(@Valid CreateTaskForm createTaskForm,
             BindingResult result, Model model) {
         if (result.hasErrors()) {
+            model.addAttribute("tags", tagRepository.findAll());
             return "create";
         }
         taskRepository.register(new Todo(0, createTaskForm.getDate(),
-                createTaskForm.getTitle(), createTaskForm.getMemo(), null));
+                createTaskForm.getTitle(), createTaskForm.getMemo(),
+                createTaskForm.getTagId()));
         return "redirect:/todo?date=" + createTaskForm.getDate();
     }
+
     @GetMapping("/todo/detail")
     public String detail(@RequestParam int id, Model model) {
         Todo todo = taskRepository.findById(id);
+        Tag tag = todo.getTagId() != null
+                ? tagRepository.findById(todo.getTagId()) : null;
         model.addAttribute("todo", todo);
+        model.addAttribute("tag", tag);
         return "detail";
     }
 
@@ -139,8 +164,9 @@ public class TodoController {
     public String edit(@RequestParam int id, Model model) {
         Todo todo = taskRepository.findById(id);
         UpdateTaskForm updateTaskForm = new UpdateTaskForm(
-                todo.getTitle(), todo.getMemo(), todo.getDate());
+                todo.getTitle(), todo.getMemo(), todo.getDate(), todo.getTagId());
         model.addAttribute("updateTaskForm", updateTaskForm);
+        model.addAttribute("tags", tagRepository.findAll());
         model.addAttribute("id", id);
         return "edit";
     }
@@ -150,11 +176,13 @@ public class TodoController {
             @Valid UpdateTaskForm updateTaskForm,
             BindingResult result, Model model) {
         if (result.hasErrors()) {
+            model.addAttribute("tags", tagRepository.findAll());
             model.addAttribute("id", id);
             return "edit";
         }
         taskRepository.update(new Todo(id, updateTaskForm.getDate(),
-                updateTaskForm.getTitle(), updateTaskForm.getMemo(), null));
+                updateTaskForm.getTitle(), updateTaskForm.getMemo(),
+                updateTaskForm.getTagId()));
         return "redirect:/todo?date=" + updateTaskForm.getDate();
     }
 
@@ -184,7 +212,7 @@ public class TodoController {
 
             if (!alreadyExists) {
                 taskRepository.register(new Todo(0, todayStr,
-                        reminder.getTitle(), reminder.getMemo(),null));
+                        reminder.getTitle(), reminder.getMemo(), null));
             }
         }
     }

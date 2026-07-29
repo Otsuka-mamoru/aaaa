@@ -1,31 +1,50 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-  <meta charset="UTF-8">
-  <title>ToDoリスト</title>
+	<meta charset="UTF-8">
+	<title>ToDoリスト</title>
 </head>
+
 <body>
-  <h1 th:text="${todoModel.date} + ' のToDoリスト'"></h1>
+	<h1 th:text="${todoModel.date} + ' のToDoリスト'"></h1>
 
-    <!-- 検索機能関係-->
-  <form th:action="@{/todo}" method="get">
-    <input type="hidden" name="date" th:value="${todoModel.date}">
-    <input type="text" name="keyword" th:value="${keyword}" placeholder="キーワードで検索">
-    <button type="submit">検索</button>
-    <a th:href="@{/todo(date=${todoModel.date})}">クリア</a>
-  </form>
+	<!-- 検索機能関係-->
+	<form th:action="@{/todo}" method="get">
+		<input type="hidden" name="date" th:value="${todoModel.date}">
+		<input type="text" name="keyword" th:value="${keyword}" placeholder="キーワードで検索">
+		<button type="submit">検索</button>
+		<a th:href="@{/todo(date=${todoModel.date})}">クリア</a>
 
-  <p th:if="${todoModel.todos.isEmpty()}">まだToDoはありません</p>
-  <ul>
-    <li th:each="todo : ${todoModel.todos}">
-      <a th:href="@{/todo/detail(id=${todo.id})}"
-         th:text="${todo.title}">
-      </a>
-      <a th:href="@{/todo/delete-confirm(id=${todo.id}, date=${todoModel.date})}">🗑 削除</a>
-    </li>
-  </ul>
+	</form>
 
-  <a th:href="@{/todo/new(date=${todoModel.date})}">＋ 新規作成</a><br>
-  <a href="/">← カレンダーに戻る</a>
+	<form th:action="@{/todo}" method="get">
+		<input type="hidden" name="date" th:value="${todoModel.date}">
+		<select name="tagId">
+			<option value="">タグで絞り込み</option>
+			<option th:each="tag : ${tags}" th:value="${tag.id}" th:text="${tag.name} ?: ${tag.color}"
+				th:style="'background-color:' + ${tag.color}">
+			</option>
+		</select>
+		<button type="submit">絞り込み</button>
+		<a th:href="@{/todo(date=${todoModel.date})}">クリア</a>
+	</form>
+
+
+	<p th:if="${todoModel.todos.isEmpty()}">まだToDoはありません</p>
+	<ul>
+		<li th:each="todo : ${todoModel.todos}">
+			<span th:each="tag : ${tags}" th:if="${tag.id == todo.tagId}"
+				th:style="'display:inline-block; width:12px; height:12px; border-radius:50%; background-color:' + ${tag.color}">
+			</span>
+			<a th:href="@{/todo/detail(id=${todo.id})}" th:text="${todo.title}">
+			</a>
+			<a th:href="@{/todo/delete-confirm(id=${todo.id}, date=${todoModel.date})}">🗑 削除</a>
+		</li>
+	</ul>
+
+	<a th:href="@{/todo/new(date=${todoModel.date})}">＋ 新規作成</a><br>
+	<a href="/">← カレンダーに戻る</a>
 </body>
+
 </html>

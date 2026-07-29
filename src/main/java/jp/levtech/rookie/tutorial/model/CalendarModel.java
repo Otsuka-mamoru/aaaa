@@ -17,4 +17,5 @@ public class CalendarModel {
     private List<List<String>> weeks;
     private String todayStr;
     private List<Todo> todayTodos;
+    private Integer selectedTagId;
 }

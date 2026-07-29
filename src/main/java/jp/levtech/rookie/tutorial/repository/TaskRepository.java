@@ -11,4 +11,5 @@ public interface TaskRepository {
     void register(Todo todo);
     void update(Todo todo);
     void delete(int id);
+    List<Todo> findByTagId(int tagId);
 }

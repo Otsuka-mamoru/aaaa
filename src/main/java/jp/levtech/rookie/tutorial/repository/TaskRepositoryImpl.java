@@ -41,5 +41,10 @@ public class TaskRepositoryImpl implements TaskRepository {
     @Override
     public List<Todo> search(String keyword) {
         return taskMapper.search(keyword);
+        
+    }
+    @Override
+    public List<Todo> findByTagId(int tagId) {
+        return taskMapper.findByTagId(tagId);
     }
 }

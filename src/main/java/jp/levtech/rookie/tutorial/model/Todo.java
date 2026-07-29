@@ -12,5 +12,5 @@ public class Todo {
     private String date;
     private String title;
     private String memo;
-    private Integer tagId; // NULL許容なのでIntegerを使う
+    private Integer tagId;
 }

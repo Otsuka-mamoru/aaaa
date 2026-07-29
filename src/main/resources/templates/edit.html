@@ -18,6 +18,16 @@
     <label>メモ</label><br>
     <textarea th:field="*{memo}"></textarea><br><br>
 
+	<label>タグ</label><br>
+	<select th:field="*{tagId}">
+	  <option value="">なし</option>
+	  <option th:each="tag : ${tags}"
+	          th:value="${tag.id}"
+	          th:text="${tag.name} ?: ${tag.color}"
+	          th:style="'background-color:' + ${tag.color}">
+	  </option>
+	</select><br><br>
+
     <button type="submit">更新</button>
     <a th:href="@{/todo(date=${updateTaskForm.date})}">← 戻る</a>
   </form>

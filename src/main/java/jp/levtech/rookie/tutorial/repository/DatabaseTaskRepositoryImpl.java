@@ -24,6 +24,8 @@ public class DatabaseTaskRepositoryImpl implements TaskRepository {
      *
      * @param taskMapper タスクのマッパー
      */
+
+
     public DatabaseTaskRepositoryImpl(TaskMapper taskMapper) {
         this.taskMapper = taskMapper;
     }
@@ -70,5 +72,10 @@ public class DatabaseTaskRepositoryImpl implements TaskRepository {
     @Override
     public List<Todo> search(String keyword) {
         return taskMapper.search(keyword);
+        
+    }
+    @Override
+    public List<Todo> findByTagId(int tagId) {
+        return taskMapper.findByTagId(tagId);
     }
 }

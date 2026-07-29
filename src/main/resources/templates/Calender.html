@@ -11,7 +11,7 @@
 	<!-- 年月ナビゲーション -->
 	<a th:href="@{/(year=${calendarModel.prevYear}, month=${calendarModel.prevMonth})}">← 前月</a>
 	<h1 th:text="${calendarModel.year} + '年' + ${calendarModel.month} + '月'"></h1>
-	<a th:href="@{/(year=${nextYear}, month=${nextMonth})}">次月 →</a>
+	<a th:href="@{/(year=${calendarModel.nextYear}, month=${calendarModel.nextMonth})}">次月 →</a>
 
 	<div style="display:flex; gap:40px; align-items:flex-start;">
 
@@ -27,24 +27,43 @@
 			</tr>
 			<tr th:each="week : ${calendarModel.weeks}">
 				<td th:each="day : ${week}">
-					<a th:if="${day != null}" th:href="@{/todo(date=${day})}"
-						th:text="${day.substring(day.lastIndexOf('-') + 1)}"</a>
+				  <a th:if="${day != null}"
+				     th:href="@{/todo(date=${day})}"
+				     th:text="${day.substring(day.lastIndexOf('-') + 1)}">
+				  </a>
+				  <span th:if="${day != null and taggedDates != null and taggedDates.contains(day)}"
+				        th:style="'display:inline-block; width:8px; height:8px; border-radius:50%; background-color:' + ${tags.?[id == selectedTagId][0].color}">
+				  </span>
 				</td>
 			</tr>
-			</table>
+		</table>
 
 		<div>
 			<h2 th:text="${calendarModel.todayStr} + ' の ToDo'"></h2>
 			<p th:if="${calendarModel.todayTodos.isEmpty()}">今日のToDoはありません</p>
 			<ul>
 				<li th:each="todo : ${calendarModel.todayTodos}">
-				    <a th:href="@{/todo/detail(id=${todo.id})}" th:text="${todo.title}">
-				    </a>
+					<a th:href="@{/todo/detail(id=${todo.id})}" th:text="${todo.title}">
+					</a>
 				</li>
 			</ul>
 			<a th:href="@{/todo(date=${calendarModel.todayStr})}">今日のToDoリストへ →</a>
-			
+
 		</div>
+<!--タグ関係-->
+		<form th:action="@{/}" method="get">
+			<input type="hidden" name="year" th:value="${calendarModel.year}">
+			<input type="hidden" name="month" th:value="${calendarModel.month}">
+			<select name="tagId">
+				<option value="">タグで絞り込み</option>
+				<option th:each="tag : ${tags}" th:value="${tag.id}" th:text="${tag.name} ?: ${tag.color}"
+					th:style="'background-color:' + ${tag.color}">
+				</option>
+			</select>
+			<button type="submit">絞り込み</button>
+			<a th:href="@{/(year=${calendarModel.year}, month=${calendarModel.month})}">クリア</a>
+		</form>
+
 
 	</div>
 	<!-- リマインダー確認 -->
