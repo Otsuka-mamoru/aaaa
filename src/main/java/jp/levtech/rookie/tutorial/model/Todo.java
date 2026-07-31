@@ -13,4 +13,7 @@ public class Todo {
     private String title;
     private String memo;
     private Integer tagId;
+    private Integer notifyHour;    
+    private Integer notifyMinute;  
+    private Integer reminderId; // リマインドアラーム
 }

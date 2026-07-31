@@ -18,4 +18,7 @@ public class Reminder {
     private boolean fri;
     private boolean sat;
     private boolean sun;
+ // 時間設定用
+    private Integer notifyHour;
+    private Integer notifyMinute;
 }

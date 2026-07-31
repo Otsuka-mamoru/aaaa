@@ -11,20 +11,37 @@
 
 	<form th:action="@{/todo/create}" th:object="${createTaskForm}" method="post">
 		<input type="hidden" th:field="*{date}">
-
+		<!-- タグの設定-->
 		<label>タイトル</label><br>
 		<input type="text" th:field="*{title}"><br>
 		<p th:if="${#fields.hasErrors('title')}" style="color:red">＊登録にはタイトルが必要です</p>
-
+		<!-- タグのメモ-->
 		<label>メモ</label><br>
 		<textarea th:field="*{memo}"></textarea><br><br>
-
+		<!-- タグの色-->
 		<label>タグ</label><br>
 		<select th:field="*{tagId}">
 			<option value="">なし</option>
 			<option th:each="tag : ${tags}" th:value="${tag.id}" th:text="${tag.name} ?: ${tag.color}"
 				th:style="'background-color:' + ${tag.color}">
 			</option>
+			</select><br><br>
+			<!-- 通知時間設定-->
+			<label>通知時間</label><br>
+			<select th:field="*{notifyHour}">
+			  <option value="">--</option>
+			  <option th:each="h : ${#numbers.sequence(0, 23)}"
+			          th:value="${h}"
+			          th:text="${h} + '時'">
+			  </option>
+			</select>
+			<select th:field="*{notifyMinute}">
+			  <option value="">--</option>
+			  <option th:each="m : ${#numbers.sequence(0, 59)}"
+			          th:value="${m}"
+			          th:text="${m} + '分'">
+			  </option>
+			
 
 		</select><br><br>
 		<button type="submit">保存</button>

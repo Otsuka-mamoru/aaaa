@@ -16,17 +16,35 @@
     <label>メモ</label><br>
     <textarea th:field="*{memo}"></textarea><br><br>
 
-    <label>繰り返す曜日</label><br>
-    <input type="checkbox" th:field="*{mon}">月
-    <input type="checkbox" th:field="*{tue}">火
-    <input type="checkbox" th:field="*{wed}">水
-    <input type="checkbox" th:field="*{thu}">木
-    <input type="checkbox" th:field="*{fri}">金
-    <input type="checkbox" th:field="*{sat}">土
-    <input type="checkbox" th:field="*{sun}">日<br><br>
+	<label>繰り返す曜日</label><br>
+	<input type="checkbox" th:field="*{mon}">月
+	<input type="checkbox" th:field="*{tue}">火
+	<input type="checkbox" th:field="*{wed}">水
+	<input type="checkbox" th:field="*{thu}">木
+	<input type="checkbox" th:field="*{fri}">金
+	<input type="checkbox" th:field="*{sat}">土
+	<input type="checkbox" th:field="*{sun}">日<br><br>
 
-    <button type="submit">保存</button>
-    <a href="/reminder">← 戻る</a>
+	<!-- 通知時間をここに移動 -->
+	<label>通知時間</label><br>
+	<select name="notifyHour">
+	  <option value="">--</option>
+	  <option th:each="h : ${#numbers.sequence(0, 23)}"
+	          th:value="${h}"
+	          th:text="${h} + '時'">
+	  </option>
+	</select>
+	<select name="notifyMinute">
+	  <option value="">--</option>
+	  <option th:each="m : ${#numbers.sequence(0, 59)}"
+	          th:value="${m}"
+	          th:text="${m} + '分'">
+	  </option>
+	</select><br><br>
+
+	<button type="submit">保存</button>
+	<a href="/reminder">← 戻る</a>
+
   </form>
 </body>
 </html>

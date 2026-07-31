@@ -16,9 +16,11 @@
     </select>
 
     <insert id="register">
-        INSERT INTO reminders (title, memo, mon, tue, wed, thu, fri, sat, sun)
-        VALUES (#{title}, #{memo}, #{mon}, #{tue}, #{wed}, #{thu}, #{fri}, #{sat}, #{sun})
-    </insert>
+    INSERT INTO reminders (title, memo, mon, tue, wed, thu, fri, sat, sun,
+                           notify_hour, notify_minute)
+    VALUES (#{title}, #{memo}, #{mon}, #{tue}, #{wed}, #{thu}, #{fri}, #{sat}, #{sun},
+            #{notifyHour}, #{notifyMinute})
+</insert>
 
     <update id="update">
         UPDATE reminders

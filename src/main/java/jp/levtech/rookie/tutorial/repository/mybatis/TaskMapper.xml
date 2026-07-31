@@ -5,41 +5,44 @@
 <mapper
 	namespace="jp.levtech.rookie.tutorial.repository.mybatis.TaskMapper">
 
-	<select id="findByDate" parameterType="String"
-		resultType="jp.levtech.rookie.tutorial.model.Todo">
-		SELECT id, date, title, memo, tag_id FROM todos WHERE date = #{date}
-	</select>
+<select id="findByDate" parameterType="String" resultType="jp.levtech.rookie.tutorial.model.Todo">
+    SELECT id, date, title, memo, tag_id, notify_hour, notify_minute, reminder_id
+    FROM todos WHERE date = #{date}
+</select>
 
-	<select id="findById"
-		resultType="jp.levtech.rookie.tutorial.model.Todo">
-		SELECT id, date, title, memo, tag_id FROM todos WHERE id = #{id}
-	</select>
+<select id="findById" resultType="jp.levtech.rookie.tutorial.model.Todo">
+    SELECT id, date, title, memo, tag_id, notify_hour, notify_minute, reminder_id
+    FROM todos WHERE id = #{id}
+</select>
 
-	<select id="search" parameterType="String"
-		resultType="jp.levtech.rookie.tutorial.model.Todo">
-		SELECT id, date, title, memo, tag_id FROM todos
-		WHERE title LIKE #{keyword}
-		OR memo LIKE #{keyword}
-	</select>
+<select id="search" parameterType="String" resultType="jp.levtech.rookie.tutorial.model.Todo">
+    SELECT id, date, title, memo, tag_id, notify_hour, notify_minute, reminder_id
+    FROM todos
+    WHERE title LIKE #{keyword}
+    OR memo LIKE #{keyword}
+</select>
 
-	<select id="findByTagId" parameterType="int"
-		resultType="jp.levtech.rookie.tutorial.model.Todo">
-		SELECT id, date, title, memo, tag_id FROM todos WHERE tag_id = #{tagId}
-	</select>
+<select id="findByTagId" parameterType="int" resultType="jp.levtech.rookie.tutorial.model.Todo">
+    SELECT id, date, title, memo, tag_id, notify_hour, notify_minute, reminder_id
+    FROM todos WHERE tag_id = #{tagId}
+</select>
 
-	<insert id="register">
-		INSERT INTO todos (date, title, memo, tag_id)
-		VALUES (#{date}, #{title}, #{memo}, #{tagId})
-	</insert>
+<insert id="register">
+    INSERT INTO todos (date, title, memo, tag_id, notify_hour, notify_minute, reminder_id)
+    VALUES (#{date}, #{title}, #{memo}, #{tagId}, #{notifyHour}, #{notifyMinute}, #{reminderId})
+</insert>
 
-	<update id="update">
-		UPDATE todos
-		SET date = #{date},
-		title = #{title},
-		memo = #{memo},
-		tag_id = #{tagId}
-		WHERE id = #{id}
-	</update>
+<update id="update">
+    UPDATE todos
+    SET date = #{date},
+        title = #{title},
+        memo = #{memo},
+        tag_id = #{tagId},
+        notify_hour = #{notifyHour},
+        notify_minute = #{notifyMinute},
+        reminder_id = #{reminderId}
+    WHERE id = #{id}
+</update>
 
 	<delete id="delete">
 		DELETE FROM todos WHERE id = #{id}

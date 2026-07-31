@@ -15,13 +15,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import jp.levtech.rookie.tutorial.controller.form.CreateTaskForm;
-import jp.levtech.rookie.tutorial.controller.form.UpdateTaskForm;
 import jp.levtech.rookie.tutorial.model.CalendarModel;
 import jp.levtech.rookie.tutorial.model.Reminder;
 import jp.levtech.rookie.tutorial.model.Tag;
 import jp.levtech.rookie.tutorial.model.Todo;
 import jp.levtech.rookie.tutorial.model.TodoModel;
+import jp.levtech.rookie.tutorial.model.form.CreateTaskForm;
+import jp.levtech.rookie.tutorial.model.form.UpdateTaskForm;
 import jp.levtech.rookie.tutorial.repository.ReminderRepository;
 import jp.levtech.rookie.tutorial.repository.TagRepository;
 import jp.levtech.rookie.tutorial.repository.TaskRepository;
@@ -86,6 +86,7 @@ public class TodoController {
         return "Calender";
     }
 
+  //todoリスト画面
     @GetMapping("/todo")
     public String todo(@RequestParam String date,
             @RequestParam(required = false) String keyword,
@@ -108,7 +109,7 @@ public class TodoController {
         model.addAttribute("tags", tagRepository.findAll());
         return "todo";
     }
-
+//todo新規作成
     @GetMapping("/todo/new")
     public String newTodo(@RequestParam String date, Model model) {
         CreateTaskForm createTaskForm = new CreateTaskForm();
@@ -117,7 +118,7 @@ public class TodoController {
         model.addAttribute("tags", tagRepository.findAll());
         return "create";
     }
-
+//todo新規作成画面
     @PostMapping("/todo/create")
     public String createTodo(@Valid CreateTaskForm createTaskForm,
             BindingResult result, Model model) {
@@ -127,10 +128,15 @@ public class TodoController {
         }
         taskRepository.register(new Todo(0, createTaskForm.getDate(),
                 createTaskForm.getTitle(), createTaskForm.getMemo(),
-                createTaskForm.getTagId()));
+                createTaskForm.getTagId(),
+                createTaskForm.getNotifyHour(),
+                createTaskForm.getNotifyMinute(),
+                createTaskForm.getReminderId()));
+
         return "redirect:/todo?date=" + createTaskForm.getDate();
     }
 
+   //todo詳細画面
     @GetMapping("/todo/detail")
     public String detail(@RequestParam int id, Model model) {
         Todo todo = taskRepository.findById(id);
@@ -140,31 +146,32 @@ public class TodoController {
         model.addAttribute("tag", tag);
         return "detail";
     }
-
+//todo削除確認画面
     @GetMapping("/todo/delete-confirm")
     public String deleteConfirm(@RequestParam int id, Model model) {
         Todo todo = taskRepository.findById(id);
         model.addAttribute("todo", todo);
         return "delete-confirm";
     }
-
+  //todo削除画面
     @PostMapping("/todo/delete")
     public String delete(@RequestParam int id, @RequestParam String date) {
         taskRepository.delete(id);
         return "redirect:/todo/deleted?date=" + date;
     }
-
+//todo削除完了画面
     @GetMapping("/todo/deleted")
     public String deleted(@RequestParam String date, Model model) {
         model.addAttribute("date", date);
         return "delete";
     }
-
+//編集画面
     @GetMapping("/todo/edit")
     public String edit(@RequestParam int id, Model model) {
         Todo todo = taskRepository.findById(id);
         UpdateTaskForm updateTaskForm = new UpdateTaskForm(
-                todo.getTitle(), todo.getMemo(), todo.getDate(), todo.getTagId());
+                todo.getTitle(), todo.getMemo(), todo.getDate(), todo.getTagId(),
+                todo.getNotifyHour(), todo.getNotifyMinute(), todo.getReminderId());
         model.addAttribute("updateTaskForm", updateTaskForm);
         model.addAttribute("tags", tagRepository.findAll());
         model.addAttribute("id", id);
@@ -179,10 +186,13 @@ public class TodoController {
             model.addAttribute("tags", tagRepository.findAll());
             model.addAttribute("id", id);
             return "edit";
-        }
-        taskRepository.update(new Todo(id, updateTaskForm.getDate(),
+        }taskRepository.update(new Todo(id, updateTaskForm.getDate(),
                 updateTaskForm.getTitle(), updateTaskForm.getMemo(),
-                updateTaskForm.getTagId()));
+                updateTaskForm.getTagId(),
+                updateTaskForm.getNotifyHour(),
+                updateTaskForm.getNotifyMinute(),
+                updateTaskForm.getReminderId()));
+        
         return "redirect:/todo?date=" + updateTaskForm.getDate();
     }
 
@@ -211,8 +221,8 @@ public class TodoController {
                     .anyMatch(t -> t.getTitle().equals(reminder.getTitle()));
 
             if (!alreadyExists) {
-                taskRepository.register(new Todo(0, todayStr,
-                        reminder.getTitle(), reminder.getMemo(), null));
+            	taskRepository.register(new Todo(0, todayStr,
+            	        reminder.getTitle(), reminder.getMemo(), null, null, null, reminder.getId()));
             }
         }
     }
@@ -234,8 +244,7 @@ public class TodoController {
                 week = new ArrayList<>();
             }
         }
-
-        while (week.size() < 7) week.add(null);
+        for (; week.size() < 7;) week.add(null);
         if (!week.isEmpty()) weeks.add(week);
 
         return weeks;

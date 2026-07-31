@@ -1,4 +1,4 @@
-package jp.levtech.rookie.tutorial.controller.form;
+package jp.levtech.rookie.tutorial.model.form;
 
 import jakarta.validation.constraints.NotBlank;
 
@@ -20,4 +20,11 @@ public class UpdateTaskForm {
     private String date;
     // タグ
     private Integer tagId;
+    
+    private Integer notifyHour;
+    
+    private Integer notifyMinute;
+    
+ // リマイどアラーム
+    private Integer reminderId;
 }

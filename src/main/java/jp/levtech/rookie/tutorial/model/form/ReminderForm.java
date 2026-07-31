@@ -1,4 +1,4 @@
-package jp.levtech.rookie.tutorial.controller.form;
+package jp.levtech.rookie.tutorial.model.form;
 
 import jakarta.validation.constraints.NotBlank;
 
@@ -19,4 +19,6 @@ public class ReminderForm {
     private boolean fri;
     private boolean sat;
     private boolean sun;
+    private Integer notifyHour;    
+    private Integer notifyMinute;  
 }

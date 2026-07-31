@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import jp.levtech.rookie.tutorial.controller.form.ReminderForm;
 import jp.levtech.rookie.tutorial.model.Reminder;
+import jp.levtech.rookie.tutorial.model.form.ReminderForm;
 import jp.levtech.rookie.tutorial.repository.ReminderRepository;
 
 @Controller
@@ -35,7 +35,7 @@ public class ReminderController {
     // リマインド新規作成画面
     @GetMapping("/reminder/new")
     public String newReminder(Model model) {
-        model.addAttribute("reminderForm", new ReminderForm());
+        model.addAttribute("reminderForm", new Reminder());
         return "reminder/create";
     }
 
@@ -56,7 +56,9 @@ public class ReminderController {
                 reminderForm.isThu(),
                 reminderForm.isFri(),
                 reminderForm.isSat(),
-                reminderForm.isSun()
+                reminderForm.isSun(),
+                reminderForm.getNotifyHour(),
+                reminderForm.getNotifyMinute()
         ));
         return "redirect:/reminder";
     }
@@ -99,7 +101,9 @@ public class ReminderController {
                 reminderForm.isThu(),
                 reminderForm.isFri(),
                 reminderForm.isSat(),
-                reminderForm.isSun()
+                reminderForm.isSun(),
+                reminderForm.getNotifyHour(),
+                reminderForm.getNotifyMinute()
         ));
         return "redirect:/reminder";
     }

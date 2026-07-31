@@ -8,12 +8,26 @@
   <h1>ToDo詳細</h1>
 
   <p><strong>日付：</strong>
-	<span th:text="${todo.date}"></span></p>
+    <span th:text="${todo.date}"></span></p>
   <p><strong>タイトル：</strong>
-	<span th:text="${todo.title}"></span></p>
+    <span th:text="${todo.title}"></span></p>
   <p><strong>メモ：</strong>
-	<span th:text="${todo.memo}"></span></p>
+    <span th:text="${todo.memo}"></span></p>
+  <p><strong>タグ：</strong>
+    <span th:if="${tag != null}"
+          th:text="${tag.name} ?: ${tag.color}"
+          th:style="'color:' + ${tag.color}"></span>
+    <span th:if="${tag == null}">なし</span>
+  </p>
+  <p><strong>通知時間：</strong>
+    <span th:if="${todo.notifyHour != null and todo.notifyMinute != null}"
+          th:text="${todo.notifyHour} + '時' + ${todo.notifyMinute} + '分'">
+    </span>
+    <span th:if="${todo.notifyHour == null}">未設定</span>
+  </p>
 
+  <a th:if="${todo.reminderId != null}"
+     th:href="@{/reminder/edit(id=${todo.reminderId})}">リマインドアラームを変更する</a>
   <a th:href="@{/todo(date=${todo.date})}">← ToDoリストに戻る</a>
 </body>
 </html>

@@ -2,10 +2,10 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>リマインドメモ編集</title>
+  <title>リマインドアラーム</title>
 </head>
 <body>
-  <h1>リマインドメモ編集</h1>
+  <h1>リマインドアラーム</h1>
 
   <form th:action="@{/reminder/update}" th:object="${reminderForm}" method="post">
     <input type="hidden" name="id" th:value="${id}">
@@ -28,6 +28,23 @@
 
     <button type="submit">更新</button>
     <a href="/reminder">← 戻る</a>
-  </form>
+	<!--通知時間設定-->
+	<label>通知時間</label><br>
+	<select th:field="*{notifyHour}">
+	  <option value="">--</option>
+	  <option th:each="h : ${#numbers.sequence(0, 23)}"
+	          th:value="${h}"
+	          th:text="${h} + '時'">
+	  </option>
+	</select>
+	<!--通知の詳細設定-->
+	<select th:field="*{notifyMinute}">
+	  <option value="">--</option>
+	  <option th:each="m : ${#numbers.sequence(0, 59)}"
+	          th:value="${m}"
+	          th:text="${m} + '分'">
+	  </option>
+	</select><br><br>
+	  </form>
 </body>
 </html>
