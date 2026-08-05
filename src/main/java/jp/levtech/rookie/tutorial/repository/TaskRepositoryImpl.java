@@ -47,4 +47,10 @@ public class TaskRepositoryImpl implements TaskRepository {
     public List<Todo> findByTagId(int tagId) {
         return taskMapper.findByTagId(tagId);
     }
+    @Override
+    public List<Todo> findByMonth(String yearMonth) {
+        return taskMapper.findByMonth(yearMonth);
+    }
+    
+
 }

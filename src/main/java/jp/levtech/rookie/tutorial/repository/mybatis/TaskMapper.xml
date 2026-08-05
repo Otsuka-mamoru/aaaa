@@ -27,6 +27,12 @@
     FROM todos WHERE tag_id = #{tagId}
 </select>
 
+<select id="findByMonth" parameterType="String" resultType="jp.levtech.rookie.tutorial.model.Todo">
+    SELECT id, date, title, memo, tag_id, notify_hour, notify_minute, reminder_id
+    FROM todos
+    WHERE date LIKE #{yearMonth} || '%'
+</select>
+
 <insert id="register">
     INSERT INTO todos (date, title, memo, tag_id, notify_hour, notify_minute, reminder_id)
     VALUES (#{date}, #{title}, #{memo}, #{tagId}, #{notifyHour}, #{notifyMinute}, #{reminderId})

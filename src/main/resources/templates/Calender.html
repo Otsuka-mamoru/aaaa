@@ -1,74 +1,108 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-
 <head>
-	<meta charset="UTF-8">
-	<title>カレンダー</title>
+  <meta charset="UTF-8">
+  <title>カレンダー</title>
+  <link rel="stylesheet" href="/css/style.css">
 </head>
-
 <body>
+<div class="app-container">
 
-	<!-- 年月ナビゲーション -->
-	<a th:href="@{/(year=${calendarModel.prevYear}, month=${calendarModel.prevMonth})}">← 前月</a>
-	<h1 th:text="${calendarModel.year} + '年' + ${calendarModel.month} + '月'"></h1>
-	<a th:href="@{/(year=${calendarModel.nextYear}, month=${calendarModel.nextMonth})}">次月 →</a>
+  <!-- 左エリア：カレンダー -->
+  <div class="calendar-area">
 
-	<div style="display:flex; gap:40px; align-items:flex-start;">
+    <div class="nav-links">
+      <a href="/reminder">リマインドメモ設定</a>
+      <a href="/tag">タグ管理</a>
+    </div>
 
-		<table border="1">
-			<tr>
-				<th>日</th>
-				<th>月</th>
-				<th>火</th>
-				<th>水</th>
-				<th>木</th>
-				<th>金</th>
-				<th>土</th>
-			</tr>
-			<tr th:each="week : ${calendarModel.weeks}">
-				<td th:each="day : ${week}">
-				  <a th:if="${day != null}"
-				     th:href="@{/todo(date=${day})}"
-				     th:text="${day.substring(day.lastIndexOf('-') + 1)}">
-				  </a>
-				  <span th:if="${day != null and taggedDates != null and taggedDates.contains(day)}"
-				        th:style="'display:inline-block; width:8px; height:8px; border-radius:50%; background-color:' + ${tags.?[id == selectedTagId][0].color}">
-				  </span>
-				</td>
-			</tr>
-		</table>
+    <div class="cal-nav">
+      <a th:href="@{/(year=${calendarModel.prevYear}, month=${calendarModel.prevMonth})}">‹</a>
+      <h1 th:text="${calendarModel.year} + '年' + ${calendarModel.month} + '月'"></h1>
+      <a th:href="@{/(year=${calendarModel.nextYear}, month=${calendarModel.nextMonth})}">›</a>
+    </div>
 
-		<div>
-			<h2 th:text="${calendarModel.todayStr} + ' の ToDo'"></h2>
-			<p th:if="${calendarModel.todayTodos.isEmpty()}">今日のToDoはありません</p>
-			<ul>
-				<li th:each="todo : ${calendarModel.todayTodos}">
-					<a th:href="@{/todo/detail(id=${todo.id})}" th:text="${todo.title}">
-					</a>
-				</li>
-			</ul>
-			<a th:href="@{/todo(date=${calendarModel.todayStr})}">今日のToDoリストへ →</a>
+    <table class="cal-table">
+      <thead>
+        <tr>
+          <th>日</th><th>月</th><th>火</th><th>水</th><th>木</th><th>金</th><th>土</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="week : ${calendarModel.weeks}">
+			<td th:each="day : ${week}"
+			    th:data-date="${day}"
+			    th:style="${day != null} ? 'cursor:pointer' : ''"
+			    onclick="if(this.dataset.date) location.href='/todo?date='+this.dataset.date">
+			  <span class="day-number"
+			        th:text="${day != null} ? ${day.substring(day.lastIndexOf('-') + 1)} : ''">
+			  </span>
+            <span th:if="${day != null and taggedDates != null and taggedDates.contains(day)}"
+                  class="tag-dot"
+                  th:style="'background-color:' + ${tags.?[id == selectedTagId][0].color}">
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
-		</div>
-<!--タグ関係-->
-		<form th:action="@{/}" method="get">
-			<input type="hidden" name="year" th:value="${calendarModel.year}">
-			<input type="hidden" name="month" th:value="${calendarModel.month}">
-			<select name="tagId">
-				<option value="">タグで絞り込み</option>
-				<option th:each="tag : ${tags}" th:value="${tag.id}" th:text="${tag.name} ?: ${tag.color}"
-					th:style="'background-color:' + ${tag.color}">
-				</option>
-			</select>
-			<button type="submit">絞り込み</button>
-			<a th:href="@{/(year=${calendarModel.year}, month=${calendarModel.month})}">クリア</a>
-		</form>
+  <!-- 右エリア -->
+  <div class="side-area">
 
+    <!-- 今日のToDo -->
+    <div class="today-todo">
+      <h2 th:text="${calendarModel.todayStr} + ' の ToDo'"></h2>
+      <p class="no-todo" th:if="${calendarModel.todayTodos.isEmpty()}">今日のToDoはありません</p>
+      <ul>
+        <li th:each="todo : ${calendarModel.todayTodos}">
+          <a th:href="@{/todo/detail(id=${todo.id})}"
+             th:text="${todo.title}">
+          </a>
+        </li>
+      </ul>
+      <a th:href="@{/todo(date=${calendarModel.todayStr})}" class="more-link">
+        今日のToDoリストへ →
+      </a>
+    </div>
+	<!-- ToDoを表示 -->
+	  <div th:if="${day != null and todosByDate[day] != null}">
+	    <div th:each="todo : ${todosByDate[day]}"
+	         style="font-size:11px; padding:2px 4px; margin-bottom:2px; border-radius:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"
+	         th:style="${todo.tagId != null} ?
+	             'font-size:11px; padding:2px 4px; margin-bottom:2px; border-radius:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; background-color:' + ${tags.?[id == todo.tagId][0].color} + '; opacity:0.8' :
+	             'font-size:11px; padding:2px 4px; margin-bottom:2px; border-radius:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; background-color:#f0f0f0'"
+	         th:text="${todo.title}">
+	    </div>
+	  </div>
+	   <!-- タグドット -->
+	    <span th:if="${day != null and taggedDates != null and taggedDates.contains(day)}"
+	          class="tag-dot"
+	          th:style="'background-color:' + ${tags.?[id == selectedTagId][0].color}">
+	    </span>
+	  </td>
 
-	</div>
-	<!-- リマインダー確認 -->
-	<a href="/reminder">リマインドメモ設定</a>
+    <!-- タグ検索 -->
+    <div class="tag-search">
+      <h3>タグで絞り込み</h3>
+      <form th:action="@{/}" method="get">
+        <input type="hidden" name="year" th:value="${calendarModel.year}">
+        <input type="hidden" name="month" th:value="${calendarModel.month}">
+        <select name="tagId">
+          <option value="">すべて</option>
+          <option th:each="tag : ${tags}"
+                  th:value="${tag.id}"
+                  th:text="${tag.name} ?: ${tag.color}"
+                  th:style="'background-color:' + ${tag.color}">
+          </option>
+        </select>
+        <button type="submit" class="btn-search">絞り込み</button>
+        <a th:href="@{/(year=${calendarModel.year}, month=${calendarModel.month})}"
+           class="clear-link">クリア</a>
+      </form>
+    </div>
 
+  </div>
+</div>
 </body>
-
 </html>

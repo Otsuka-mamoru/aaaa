@@ -1,8 +1,9 @@
 package jp.levtech.rookie.tutorial.controller;
 
-import jp.levtech.rookie.tutorial.service.DiscordNotification;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import jp.levtech.rookie.tutorial.service.DiscordNotification;
 
 @RestController
 public class TestController {
@@ -11,7 +12,7 @@ public class TestController {
 
     public TestController(DiscordNotification discordService) {
         this.discordService = discordService;
-    }
+   }
 
     @GetMapping("/test/discord")
     public String testDiscord() {

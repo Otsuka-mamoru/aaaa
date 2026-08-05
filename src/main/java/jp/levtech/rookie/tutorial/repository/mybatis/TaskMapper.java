@@ -21,4 +21,6 @@ public interface TaskMapper {
 	void delete(int id);
 	
 	List<Todo> findByTagId(int tagId);
+
+	List<Todo> findByMonth(String yearMonth);
 }

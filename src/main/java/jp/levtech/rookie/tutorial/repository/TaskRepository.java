@@ -12,4 +12,7 @@ public interface TaskRepository {
     void update(Todo todo);
     void delete(int id);
     List<Todo> findByTagId(int tagId);
+ // 表記
+    List<Todo> findByMonth(String yearMonth);
+    
 }

@@ -33,4 +33,5 @@ public class DatabaseTagRepositoryImpl implements TagRepository {
     public void update(Tag tag) {
         tagMapper.update(tag);
     }
+ 
 }
