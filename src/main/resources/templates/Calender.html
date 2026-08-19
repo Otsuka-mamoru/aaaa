@@ -30,17 +30,34 @@
       </thead>
       <tbody>
         <tr th:each="week : ${calendarModel.weeks}">
-			<td th:each="day : ${week}"
-			    th:data-date="${day}"
-			    th:style="${day != null} ? 'cursor:pointer' : ''"
-			    onclick="if(this.dataset.date) location.href='/todo?date='+this.dataset.date">
-			  <span class="day-number"
-			        th:text="${day != null} ? ${day.substring(day.lastIndexOf('-') + 1)} : ''">
-			  </span>
+          <td th:each="day : ${week}"
+              th:data-date="${day}"
+              th:style="${day != null} ? 'cursor:pointer' : ''"
+              onclick="if(this.dataset.date) location.href='/todo?date='+this.dataset.date">
+
+            <!-- 日付番号 -->
+            <span class="day-number"
+                  th:text="${day != null} ? ${day.substring(day.lastIndexOf('-') + 1)} : ''">
+            </span>
+
+            <!-- ToDoリスト -->
+			<div th:if="${day != null and todosByDate.get(day) != null}">
+				<a th:each="todo : ${todosByDate.get(day)}"
+				   th:with="tagColor=${todo.tagId != null ? tagColorMap[todo.tagId] : '#888'}"
+				   class="todo-pill"
+				   th:text="${todo.title}"
+				   th:href="@{/todo/detail(id=${todo.id})}"
+				   th:style="'background-color:' + ${tagColor} + '; color:#fff; text-decoration:none; display:block'"
+				   onclick="event.stopPropagation()">
+				</a>
+			</div>
+
+            <!-- タグドット -->
             <span th:if="${day != null and taggedDates != null and taggedDates.contains(day)}"
                   class="tag-dot"
                   th:style="'background-color:' + ${tags.?[id == selectedTagId][0].color}">
             </span>
+
           </td>
         </tr>
       </tbody>
@@ -65,22 +82,6 @@
         今日のToDoリストへ →
       </a>
     </div>
-	<!-- ToDoを表示 -->
-	  <div th:if="${day != null and todosByDate[day] != null}">
-	    <div th:each="todo : ${todosByDate[day]}"
-	         style="font-size:11px; padding:2px 4px; margin-bottom:2px; border-radius:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"
-	         th:style="${todo.tagId != null} ?
-	             'font-size:11px; padding:2px 4px; margin-bottom:2px; border-radius:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; background-color:' + ${tags.?[id == todo.tagId][0].color} + '; opacity:0.8' :
-	             'font-size:11px; padding:2px 4px; margin-bottom:2px; border-radius:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; background-color:#f0f0f0'"
-	         th:text="${todo.title}">
-	    </div>
-	  </div>
-	   <!-- タグドット -->
-	    <span th:if="${day != null and taggedDates != null and taggedDates.contains(day)}"
-	          class="tag-dot"
-	          th:style="'background-color:' + ${tags.?[id == selectedTagId][0].color}">
-	    </span>
-	  </td>
 
     <!-- タグ検索 -->
     <div class="tag-search">

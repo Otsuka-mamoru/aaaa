@@ -2,50 +2,98 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>リマインドアラーム</title>
+  <title>Todo設定</title>
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-  <h1>リマインドアラーム</h1>
+<div style="padding: 20px; max-width: 600px; margin: 0 auto;">
 
-  <form th:action="@{/todo/update}" th:object="${updateTaskForm}" method="post">
-    <input type="hidden" th:field="*{date}">
-    <input type="hidden" name="id" th:value="${id}">
+  <!-- ヘッダー -->
+  <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
+    <a th:href="@{/todo(date=${updateTaskForm.date})}"
+       style="text-decoration:none; color:#4a90e2; font-size:14px; padding:4px 12px; border:1px solid #4a90e2; border-radius:20px;">
+      ← 戻る
+    </a>
+    <h1 style="font-size:20px; font-weight:500; color:#2c3e50;">Todo設定</h1>
+  </div>
 
-    <label>タイトル</label><br>
-    <input type="text" th:field="*{title}"><br>
-    <p th:if="${#fields.hasErrors('title')}" th:errors="*{title}" style="color:red"></p>
+  <!-- カード -->
+  <div style="background:#fff; border-radius:12px; padding:24px; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
 
-    <label>メモ</label><br>
-    <textarea th:field="*{memo}"></textarea><br><br>
+    <form th:action="@{/todo/update}" th:object="${updateTaskForm}" method="post">
+      <input type="hidden" th:field="*{date}">
+      <input type="hidden" name="id" th:value="${id}">
 
-	<label>タグ</label><br>
-	<select th:field="*{tagId}">
-	  <option value="">なし</option>
-	  <option th:each="tag : ${tags}"
-	          th:value="${tag.id}"
-	          th:text="${tag.name} ?: ${tag.color}"
-	          th:style="'background-color:' + ${tag.color}">
-	  </option>
-	</select><br><br>
-	<!-- 時間設定 -->
-	<label>通知時間</label><br>
-	<select th:field="*{notifyHour}">
-	  <option value="">--</option>
-	  <option th:each="h : ${#numbers.sequence(0, 23)}"
-	          th:value="${h}"
-	          th:text="${h} + '時'">
-	  </option>
-	</select>
-	<select th:field="*{notifyMinute}">
-	  <option value="">--</option>
-	  <option th:each="m : ${#numbers.sequence(0, 59)}"
-	          th:value="${m}"
-	          th:text="${m} + '分'">
-	  </option>
-	</select><br><br>
+      <!-- タイトル -->
+      <div style="margin-bottom:20px;">
+        <label style="font-size:12px; color:#888; display:block; margin-bottom:6px;">タイトル</label>
+        <input type="text" th:field="*{title}"
+               style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; font-size:15px;">
+        <p th:if="${#fields.hasErrors('title')}"
+           th:errors="*{title}"
+           style="color:red; font-size:12px; margin-top:4px;">
+        </p>
+      </div>
 
-    <button type="submit">更新</button>
-    <a th:href="@{/todo(date=${updateTaskForm.date})}">← 戻る</a>
-  </form>
+      <!-- メモ -->
+      <div style="margin-bottom:20px;">
+        <label style="font-size:12px; color:#888; display:block; margin-bottom:6px;">メモ</label>
+        <textarea th:field="*{memo}"
+                  style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; font-size:15px; height:100px; resize:vertical;">
+        </textarea>
+      </div>
+
+      <!-- タグ -->
+      <div style="margin-bottom:20px;">
+        <label style="font-size:12px; color:#888; display:block; margin-bottom:6px;">タグ</label>
+        <select th:field="*{tagId}"
+                style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; font-size:15px;">
+          <option value="">なし</option>
+          <option th:each="tag : ${tags}"
+                  th:value="${tag.id}"
+                  th:text="${tag.name} ?: ${tag.color}"
+                  th:style="'background-color:' + ${tag.color}">
+          </option>
+        </select>
+      </div>
+
+      <!-- 通知時間 -->
+      <div style="margin-bottom:24px;">
+        <label style="font-size:12px; color:#888; display:block; margin-bottom:6px;">通知時間</label>
+        <div style="display:flex; gap:8px;">
+          <select th:field="*{notifyHour}"
+                  style="padding:10px; border:1px solid #ddd; border-radius:8px; font-size:15px;">
+            <option value="">--</option>
+            <option th:each="h : ${#numbers.sequence(0, 23)}"
+                    th:value="${h}"
+                    th:text="${h} + '時'">
+            </option>
+          </select>
+          <select th:field="*{notifyMinute}"
+                  style="padding:10px; border:1px solid #ddd; border-radius:8px; font-size:15px;">
+            <option value="">--</option>
+            <option th:each="m : ${#numbers.sequence(0, 59)}"
+                    th:value="${m}"
+                    th:text="${m} + '分'">
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <!-- ボタン -->
+      <div style="display:flex; gap:10px;">
+        <button type="submit"
+                style="background:#4a90e2; color:#fff; border:none; padding:10px 24px; border-radius:8px; font-size:14px; cursor:pointer;">
+          更新
+        </button>
+        <a th:href="@{/todo(date=${updateTaskForm.date})}"
+           style="text-decoration:none; color:#888; border:1px solid #ddd; padding:10px 24px; border-radius:8px; font-size:14px;">
+          キャンセル
+        </a>
+      </div>
+
+    </form>
+  </div>
+</div>
 </body>
 </html>

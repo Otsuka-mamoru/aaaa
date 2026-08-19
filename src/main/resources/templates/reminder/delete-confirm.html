@@ -10,7 +10,7 @@
 
   <!-- ヘッダー -->
   <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
-    <a th:href="@{/todo(date=${todo.date})}"
+    <a href="/reminder"
        style="text-decoration:none; color:#4a90e2; font-size:14px; padding:4px 12px; border:1px solid #4a90e2; border-radius:20px;">
       ← 戻る
     </a>
@@ -23,34 +23,46 @@
     <!-- 警告アイコンエリア -->
     <div style="text-align:center; margin-bottom:24px;">
       <div style="font-size:40px; margin-bottom:8px;">⚠️</div>
-      <p style="font-size:15px; color:#2c3e50;">以下のToDoを削除しますか？</p>
+      <p style="font-size:15px; color:#2c3e50;">以下のリマインドアラームを削除しますか？</p>
+      <p style="font-size:13px; color:#e74c3c; margin-top:4px;">関連するToDoのリマインド設定も解除されます</p>
     </div>
 
-    <!-- ToDo情報 -->
+    <!-- リマインド情報 -->
     <div style="background:#f8f9fa; border-radius:8px; padding:16px; margin-bottom:24px;">
       <div style="margin-bottom:12px;">
         <span style="font-size:12px; color:#888; display:block; margin-bottom:4px;">タイトル</span>
-        <span th:text="${todo.title}"
+        <span th:text="${reminder.title}"
               style="font-size:16px; font-weight:500; color:#2c3e50;"></span>
       </div>
-      <div>
+      <div style="margin-bottom:12px;">
         <span style="font-size:12px; color:#888; display:block; margin-bottom:4px;">メモ</span>
-        <span th:text="${todo.memo != null and todo.memo != ''} ? ${todo.memo} : 'なし'"
+        <span th:text="${reminder.memo != null and reminder.memo != ''} ? ${reminder.memo} : 'なし'"
               style="font-size:14px; color:#2c3e50;"></span>
+      </div>
+      <div>
+        <span style="font-size:12px; color:#888; display:block; margin-bottom:6px;">繰り返す曜日</span>
+        <div style="display:flex; gap:4px; flex-wrap:wrap;">
+          <span th:if="${reminder.mon}" style="font-size:11px; padding:2px 8px; border-radius:12px; background:#e8f4fd; color:#4a90e2;">月</span>
+          <span th:if="${reminder.tue}" style="font-size:11px; padding:2px 8px; border-radius:12px; background:#e8f4fd; color:#4a90e2;">火</span>
+          <span th:if="${reminder.wed}" style="font-size:11px; padding:2px 8px; border-radius:12px; background:#e8f4fd; color:#4a90e2;">水</span>
+          <span th:if="${reminder.thu}" style="font-size:11px; padding:2px 8px; border-radius:12px; background:#e8f4fd; color:#4a90e2;">木</span>
+          <span th:if="${reminder.fri}" style="font-size:11px; padding:2px 8px; border-radius:12px; background:#e8f4fd; color:#4a90e2;">金</span>
+          <span th:if="${reminder.sat}" style="font-size:11px; padding:2px 8px; border-radius:12px; background:#e8f4fd; color:#4a90e2;">土</span>
+          <span th:if="${reminder.sun}" style="font-size:11px; padding:2px 8px; border-radius:12px; background:#e8f4fd; color:#4a90e2;">日</span>
+        </div>
       </div>
     </div>
 
     <!-- ボタン -->
     <div style="display:flex; gap:10px;">
-      <form method="post" th:action="@{/todo/delete}">
-        <input type="hidden" name="id" th:value="${todo.id}">
-        <input type="hidden" name="date" th:value="${todo.date}">
+      <form th:action="@{/reminder/delete}" method="post">
+        <input type="hidden" name="id" th:value="${reminder.id}">
         <button type="submit"
                 style="background:#e74c3c; color:#fff; border:none; padding:10px 24px; border-radius:8px; font-size:14px; cursor:pointer;">
           削除する
         </button>
       </form>
-      <a th:href="@{/todo(date=${todo.date})}"
+      <a href="/reminder"
          style="text-decoration:none; color:#888; border:1px solid #ddd; padding:10px 24px; border-radius:8px; font-size:14px;">
         キャンセル
       </a>

@@ -20,7 +20,10 @@ public interface TaskMapper {
 
 	void delete(int id);
 	
+	void clearReminderId(int reminderId);
+	
 	List<Todo> findByTagId(int tagId);
 
+	
 	List<Todo> findByMonth(String yearMonth);
 }

@@ -3,31 +3,51 @@
 <head>
   <meta charset="UTF-8">
   <title>タグ管理</title>
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-  <h1>タグ管理</h1>
+<div style="padding: 20px; max-width: 600px; margin: 0 auto;">
 
-  <a href="/">← カレンダーに戻る</a>
+  <!-- ヘッダー -->
+  <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
+    <a href="/"
+       style="text-decoration:none; color:#4a90e2; font-size:14px; padding:4px 12px; border:1px solid #4a90e2; border-radius:20px;">
+      ← カレンダーに戻る
+    </a>
+    <h1 style="font-size:20px; font-weight:500; color:#2c3e50;">タグ管理</h1>
+  </div>
 
-  <table border="1">
-    <tr>
-      <th>色</th>
-      <th>タグ名</th>
-      <th>操作</th>
-    </tr>
-    <tr th:each="tag : ${tags}">
-      <td>
-        <span th:style="'display:inline-block; width:20px; height:20px; background-color:' + ${tag.color}"></span>
-      </td>
-      <td th:text="${tag.name} ?: '未設定'"></td>
-      <td>
-        <form th:action="@{/tag/update}" method="post">
-          <input type="hidden" name="id" th:value="${tag.id}">
-          <input type="text" name="name" th:value="${tag.name}" placeholder="タグ名を入力">
-          <button type="submit">保存</button>
-        </form>
-      </td>
-    </tr>
-  </table>
+  <!-- タグ一覧 -->
+  <div style="background:#fff; border-radius:12px; padding:16px; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+
+    <div th:each="tag : ${tags}"
+         style="display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid #f0f0f0;">
+
+      <!-- カラーサークル -->
+      <span th:style="'display:inline-block; width:24px; height:24px; border-radius:50%; flex-shrink:0; background-color:' + ${tag.color}">
+      </span>
+
+      <!-- タグ名 -->
+      <span th:text="${tag.name} ?: '未設定'"
+            style="font-size:14px; color:#888; min-width:60px;">
+      </span>
+
+      <!-- 編集フォーム -->
+      <form th:action="@{/tag/update}" method="post"
+            style="display:flex; gap:8px; flex:1;">
+        <input type="hidden" name="id" th:value="${tag.id}">
+        <input type="text" name="name" th:value="${tag.name}"
+               placeholder="タグ名を入力"
+               style="flex:1; padding:8px 12px; border:1px solid #ddd; border-radius:8px; font-size:13px;">
+        <button type="submit"
+                style="padding:8px 16px; background:#4a90e2; color:#fff; border:none; border-radius:8px; font-size:13px; cursor:pointer;">
+          保存
+        </button>
+      </form>
+
+    </div>
+  </div>
+
+</div>
 </body>
 </html>

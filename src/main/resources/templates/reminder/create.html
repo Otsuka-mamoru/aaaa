@@ -2,49 +2,120 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>リマインドメモ新規作成</title>
+  <title>リマインドアラーム新規作成</title>
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-  <h1>リマインドメモ新規作成</h1>
+<div style="padding: 20px; max-width: 600px; margin: 0 auto;">
 
-  <form th:action="@{/reminder/create}" th:object="${reminderForm}" method="post">
+  <!-- ヘッダー -->
+  <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
+    <a href="/reminder"
+       style="text-decoration:none; color:#4a90e2; font-size:14px; padding:4px 12px; border:1px solid #4a90e2; border-radius:20px;">
+      ← 戻る
+    </a>
+    <h1 style="font-size:20px; font-weight:500; color:#2c3e50;">リマインドアラーム新規作成</h1>
+  </div>
 
-    <label>タイトル</label><br>
-    <input type="text" th:field="*{title}"><br>
-    <p th:if="${#fields.hasErrors('title')}" style="color:red">＊タイトルは必須です</p>
+  <!-- カード -->
+  <div style="background:#fff; border-radius:12px; padding:24px; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
 
-    <label>メモ</label><br>
-    <textarea th:field="*{memo}"></textarea><br><br>
+    <form th:action="@{/reminder/create}" th:object="${reminderForm}" method="post">
 
-	<label>繰り返す曜日</label><br>
-	<input type="checkbox" th:field="*{mon}">月
-	<input type="checkbox" th:field="*{tue}">火
-	<input type="checkbox" th:field="*{wed}">水
-	<input type="checkbox" th:field="*{thu}">木
-	<input type="checkbox" th:field="*{fri}">金
-	<input type="checkbox" th:field="*{sat}">土
-	<input type="checkbox" th:field="*{sun}">日<br><br>
+      <!-- タイトル -->
+      <div style="margin-bottom:20px;">
+        <label style="font-size:12px; color:#888; display:block; margin-bottom:6px;">タイトル</label>
+        <input type="text" th:field="*{title}"
+               style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; font-size:15px;">
+        <p th:if="${#fields.hasErrors('title')}"
+           style="color:red; font-size:12px; margin-top:4px;">＊タイトルは必須です</p>
+      </div>
 
-	<!-- 通知時間をここに移動 -->
-	<label>通知時間</label><br>
-	<select name="notifyHour">
-	  <option value="">--</option>
-	  <option th:each="h : ${#numbers.sequence(0, 23)}"
-	          th:value="${h}"
-	          th:text="${h} + '時'">
-	  </option>
-	</select>
-	<select name="notifyMinute">
-	  <option value="">--</option>
-	  <option th:each="m : ${#numbers.sequence(0, 59)}"
-	          th:value="${m}"
-	          th:text="${m} + '分'">
-	  </option>
-	</select><br><br>
+      <!-- メモ -->
+      <div style="margin-bottom:20px;">
+        <label style="font-size:12px; color:#888; display:block; margin-bottom:6px;">メモ</label>
+        <textarea th:field="*{memo}"
+                  style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; font-size:15px; height:100px; resize:vertical;">
+        </textarea>
+      </div>
 
-	<button type="submit">保存</button>
-	<a href="/reminder">← 戻る</a>
+      <!-- 繰り返す曜日 -->
+      <div style="margin-bottom:20px;">
+        <label style="font-size:12px; color:#888; display:block; margin-bottom:10px;">繰り返す曜日</label>
+        <div style="display:flex; gap:16px; flex-wrap:wrap;">
+          <label style="display:flex; align-items:center; gap:4px; font-size:14px; cursor:pointer;">
+            <input type="checkbox" th:field="*{mon}">月
+          </label>
+          <label style="display:flex; align-items:center; gap:4px; font-size:14px; cursor:pointer;">
+            <input type="checkbox" th:field="*{tue}">火
+          </label>
+          <label style="display:flex; align-items:center; gap:4px; font-size:14px; cursor:pointer;">
+            <input type="checkbox" th:field="*{wed}">水
+          </label>
+          <label style="display:flex; align-items:center; gap:4px; font-size:14px; cursor:pointer;">
+            <input type="checkbox" th:field="*{thu}">木
+          </label>
+          <label style="display:flex; align-items:center; gap:4px; font-size:14px; cursor:pointer;">
+            <input type="checkbox" th:field="*{fri}">金
+          </label>
+          <label style="display:flex; align-items:center; gap:4px; font-size:14px; cursor:pointer;">
+            <input type="checkbox" th:field="*{sat}">土
+          </label>
+          <label style="display:flex; align-items:center; gap:4px; font-size:14px; cursor:pointer;">
+            <input type="checkbox" th:field="*{sun}">日
+          </label>
+        </div>
+      </div>
 
-  </form>
+      <!-- 通知時間 -->
+      <div style="margin-bottom:24px;">
+        <label style="font-size:12px; color:#888; display:block; margin-bottom:6px;">通知時間</label>
+        <div style="display:flex; gap:8px;">
+          <select name="notifyHour"
+                  style="padding:10px; border:1px solid #ddd; border-radius:8px; font-size:15px;">
+            <option value="">--</option>
+            <option th:each="h : ${#numbers.sequence(0, 23)}"
+                    th:value="${h}"
+                    th:text="${h} + '時'">
+            </option>
+          </select>
+          <select name="notifyMinute"
+                  style="padding:10px; border:1px solid #ddd; border-radius:8px; font-size:15px;">
+            <option value="">--</option>
+            <option th:each="m : ${#numbers.sequence(0, 59)}"
+                    th:value="${m}"
+                    th:text="${m} + '分'">
+            </option>
+          </select>
+        </div>
+		<div style="margin-bottom:20px;">
+		  <label style="font-size:12px; color:#888; display:block; margin-bottom:6px;">タグ</label>
+		  <select th:field="*{tagId}"
+		          style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; font-size:15px;">
+		    <option value="">なし</option>
+		    <option th:each="tag : ${tags}"
+		            th:value="${tag.id}"
+		            th:text="${tag.name} ?: ${tag.color}"
+		            th:style="'background-color:' + ${tag.color}">
+		    </option>
+		  </select>
+		</div>
+      </div>
+
+      <!-- ボタン -->
+      <div style="display:flex; gap:10px;">
+        <button type="submit"
+                style="background:#4a90e2; color:#fff; border:none; padding:10px 24px; border-radius:8px; font-size:14px; cursor:pointer;">
+          保存
+        </button>
+        <a href="/reminder"
+           style="text-decoration:none; color:#888; border:1px solid #ddd; padding:10px 24px; border-radius:8px; font-size:14px;">
+          キャンセル
+        </a>
+      </div>
+
+    </form>
+  </div>
+</div>
 </body>
 </html>

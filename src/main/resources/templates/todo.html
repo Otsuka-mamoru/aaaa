@@ -1,50 +1,107 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-
 <head>
-	<meta charset="UTF-8">
-	<title>ToDoリスト</title>
+  <meta charset="UTF-8">
+  <title>ToDoリスト</title>
+  <link rel="stylesheet" href="/css/style.css">
 </head>
-
 <body>
-	<h1 th:text="${todoModel.date} + ' のToDoリスト'"></h1>
+<div style="padding: 20px; max-width: 700px; margin: 0 auto;">
 
-	<!-- 検索機能関係-->
-	<form th:action="@{/todo}" method="get">
-		<input type="hidden" name="date" th:value="${todoModel.date}">
-		<input type="text" name="keyword" th:value="${keyword}" placeholder="キーワードで検索">
-		<button type="submit">検索</button>
-		<a th:href="@{/todo(date=${todoModel.date})}">クリア</a>
+  <!-- ヘッダー -->
+  <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
+    <a href="/"
+       style="text-decoration:none; color:#4a90e2; font-size:14px; padding:4px 12px; border:1px solid #4a90e2; border-radius:20px;">
+      ← カレンダーに戻る
+    </a>
+    <h1 style="font-size:20px; font-weight:500; color:#2c3e50;"
+        th:text="${todoModel.date} + ' のToDoリスト'"></h1>
+  </div>
 
-	</form>
+  <!-- 検索・絞り込みエリア -->
+  <div style="background:#fff; border-radius:12px; padding:16px; box-shadow:0 2px 8px rgba(0,0,0,0.08); margin-bottom:16px;">
+    <div style="display:flex; gap:12px; flex-wrap:wrap;">
 
-	<form th:action="@{/todo}" method="get">
-		<input type="hidden" name="date" th:value="${todoModel.date}">
-		<select name="tagId">
-			<option value="">タグで絞り込み</option>
-			<option th:each="tag : ${tags}" th:value="${tag.id}" th:text="${tag.name} ?: ${tag.color}"
-				th:style="'background-color:' + ${tag.color}">
-			</option>
-		</select>
-		<button type="submit">絞り込み</button>
-		<a th:href="@{/todo(date=${todoModel.date})}">クリア</a>
-	</form>
+      <!-- キーワード検索 -->
+      <form th:action="@{/todo}" method="get" style="display:flex; gap:8px; flex:1;">
+        <input type="hidden" name="date" th:value="${todoModel.date}">
+        <input type="text" name="keyword" th:value="${keyword}"
+               placeholder="キーワードで検索"
+               style="flex:1; padding:8px 12px; border:1px solid #ddd; border-radius:8px; font-size:13px;">
+        <button type="submit"
+                style="padding:8px 16px; background:#4a90e2; color:#fff; border:none; border-radius:8px; font-size:13px; cursor:pointer;">
+          検索
+        </button>
+        <a th:href="@{/todo(date=${todoModel.date})}"
+           style="padding:8px 12px; color:#888; border:1px solid #ddd; border-radius:8px; font-size:13px; text-decoration:none;">
+          クリア
+        </a>
+      </form>
 
+      <!-- タグ絞り込み -->
+      <form th:action="@{/todo}" method="get" style="display:flex; gap:8px;">
+        <input type="hidden" name="date" th:value="${todoModel.date}">
+        <select name="tagId"
+                style="padding:8px 12px; border:1px solid #ddd; border-radius:8px; font-size:13px;">
+          <option value="">タグで絞り込み</option>
+          <option th:each="tag : ${tags}"
+                  th:value="${tag.id}"
+                  th:text="${tag.name} ?: ${tag.color}"
+                  th:style="'background-color:' + ${tag.color}">
+          </option>
+        </select>
+        <button type="submit"
+                style="padding:8px 16px; background:#4a90e2; color:#fff; border:none; border-radius:8px; font-size:13px; cursor:pointer;">
+          絞り込み
+        </button>
+      </form>
 
-	<p th:if="${todoModel.todos.isEmpty()}">まだToDoはありません</p>
-	<ul>
-		<li th:each="todo : ${todoModel.todos}">
-			<span th:each="tag : ${tags}" th:if="${tag.id == todo.tagId}"
-				th:style="'display:inline-block; width:12px; height:12px; border-radius:50%; background-color:' + ${tag.color}">
-			</span>
-			<a th:href="@{/todo/detail(id=${todo.id})}" th:text="${todo.title}">
-			</a>
-			<a th:href="@{/todo/delete-confirm(id=${todo.id}, date=${todoModel.date})}">🗑 削除</a>
-		</li>
-	</ul>
+    </div>
+  </div>
 
-	<a th:href="@{/todo/new(date=${todoModel.date})}">＋ 新規作成</a><br>
-	<a href="/">← カレンダーに戻る</a>
+  <!-- ToDoリスト -->
+  <div style="background:#fff; border-radius:12px; padding:16px; box-shadow:0 2px 8px rgba(0,0,0,0.08); margin-bottom:16px;">
+
+    <p th:if="${todoModel.todos.isEmpty()}"
+       style="color:#aaa; font-size:14px; text-align:center; padding:20px 0;">
+      まだToDoはありません
+    </p>
+
+    <ul style="list-style:none; padding:0; margin:0;">
+      <li th:each="todo : ${todoModel.todos}"
+          style="display:flex; align-items:center; gap:10px; padding:12px 0; border-bottom:1px solid #f0f0f0;">
+
+        <!-- タグドット -->
+        <span th:each="tag : ${tags}"
+              th:if="${tag.id == todo.tagId}"
+              th:style="'display:inline-block; width:10px; height:10px; border-radius:50%; flex-shrink:0; background-color:' + ${tag.color}">
+        </span>
+        <span th:if="${todo.tagId == null}"
+              style="display:inline-block; width:10px; height:10px; border-radius:50%; flex-shrink:0; background-color:#ddd;">
+        </span>
+
+        <!-- タイトル -->
+        <a th:href="@{/todo/detail(id=${todo.id})}"
+           th:text="${todo.title}"
+           style="flex:1; text-decoration:none; color:#2c3e50; font-size:15px;">
+        </a>
+
+        <!-- 削除ボタン -->
+        <a th:href="@{/todo/delete-confirm(id=${todo.id}, date=${todoModel.date})}"
+           style="text-decoration:none; color:#e74c3c; font-size:13px; padding:4px 10px; border:1px solid #e74c3c; border-radius:6px;">
+          削除
+        </a>
+
+      </li>
+    </ul>
+  </div>
+
+  <!-- 新規作成ボタン -->
+  <a th:href="@{/todo/new(date=${todoModel.date})}"
+     style="display:inline-block; text-decoration:none; color:#fff; background:#4a90e2; padding:10px 24px; border-radius:8px; font-size:14px;">
+    ＋ 新規作成
+  </a>
+
+</div>
 </body>
-
 </html>

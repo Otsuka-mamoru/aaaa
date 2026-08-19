@@ -1,7 +1,5 @@
 package jp.levtech.rookie.tutorial.controller;
 
-import java.util.List;
-
 import jakarta.validation.Valid;
 
 import org.springframework.stereotype.Controller;
@@ -14,28 +12,39 @@ import org.springframework.web.bind.annotation.RequestParam;
 import jp.levtech.rookie.tutorial.model.Reminder;
 import jp.levtech.rookie.tutorial.model.form.ReminderForm;
 import jp.levtech.rookie.tutorial.repository.ReminderRepository;
+import jp.levtech.rookie.tutorial.repository.TagRepository;
+import jp.levtech.rookie.tutorial.repository.TaskRepository;
+
 
 @Controller
 public class ReminderController {
 
     private final ReminderRepository reminderRepository;
+    private final TagRepository tagRepository;
+    private final TaskRepository taskRepository;
 
-    public ReminderController(ReminderRepository reminderRepository) {
+
+    public ReminderController(ReminderRepository reminderRepository,
+            TagRepository tagRepository,
+            TaskRepository taskRepository) {
         this.reminderRepository = reminderRepository;
+        this.tagRepository = tagRepository;
+        this.taskRepository = taskRepository;
+    
     }
 
-    // リマインド一覧画面
+    // リマインドメモ一覧画面
     @GetMapping("/reminder")
     public String list(Model model) {
-        List<Reminder> reminders = reminderRepository.findAll();
-        model.addAttribute("reminders", reminders);
+        model.addAttribute("reminders", reminderRepository.findAll());
         return "reminder/list";
     }
 
-    // リマインド新規作成画面
+    // リマインドメモ新規作成画面
     @GetMapping("/reminder/new")
     public String newReminder(Model model) {
-        model.addAttribute("reminderForm", new Reminder());
+        model.addAttribute("reminderForm", new ReminderForm());
+        model.addAttribute("tags", tagRepository.findAll());
         return "reminder/create";
     }
 
@@ -44,6 +53,7 @@ public class ReminderController {
     public String create(@Valid ReminderForm reminderForm,
             BindingResult result, Model model) {
         if (result.hasErrors()) {
+            model.addAttribute("tags", tagRepository.findAll());
             return "reminder/create";
         }
         reminderRepository.register(new Reminder(
@@ -58,7 +68,8 @@ public class ReminderController {
                 reminderForm.isSat(),
                 reminderForm.isSun(),
                 reminderForm.getNotifyHour(),
-                reminderForm.getNotifyMinute()
+                reminderForm.getNotifyMinute(),
+                reminderForm.getTagId()
         ));
         return "redirect:/reminder";
     }
@@ -77,7 +88,11 @@ public class ReminderController {
         reminderForm.setFri(reminder.isFri());
         reminderForm.setSat(reminder.isSat());
         reminderForm.setSun(reminder.isSun());
+        reminderForm.setNotifyHour(reminder.getNotifyHour());
+        reminderForm.setNotifyMinute(reminder.getNotifyMinute());
+        reminderForm.setTagId(reminder.getTagId());
         model.addAttribute("reminderForm", reminderForm);
+        model.addAttribute("tags", tagRepository.findAll());
         model.addAttribute("id", id);
         return "reminder/edit";
     }
@@ -88,6 +103,7 @@ public class ReminderController {
             @Valid ReminderForm reminderForm,
             BindingResult result, Model model) {
         if (result.hasErrors()) {
+            model.addAttribute("tags", tagRepository.findAll());
             model.addAttribute("id", id);
             return "reminder/edit";
         }
@@ -103,7 +119,8 @@ public class ReminderController {
                 reminderForm.isSat(),
                 reminderForm.isSun(),
                 reminderForm.getNotifyHour(),
-                reminderForm.getNotifyMinute()
+                reminderForm.getNotifyMinute(),
+                reminderForm.getTagId()
         ));
         return "redirect:/reminder";
     }
@@ -111,7 +128,15 @@ public class ReminderController {
     // リマインドメモ削除処理
     @PostMapping("/reminder/delete")
     public String delete(@RequestParam int id) {
+        taskRepository.clearReminderId(id);
         reminderRepository.delete(id);
         return "redirect:/reminder";
+    }
+ // 削除確認画面
+    @GetMapping("/reminder/delete-confirm")
+    public String deleteConfirm(@RequestParam int id, Model model) {
+        Reminder reminder = reminderRepository.findById(id);
+        model.addAttribute("reminder", reminder);
+        return "reminder/delete-confirm";
     }
 }

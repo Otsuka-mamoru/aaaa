@@ -5,22 +5,24 @@
 <mapper namespace="jp.levtech.rookie.tutorial.repository.mybatis.ReminderMapper">
 
     <select id="findAll" resultType="jp.levtech.rookie.tutorial.model.Reminder">
-        SELECT id, title, memo, mon, tue, wed, thu, fri, sat, sun
+        SELECT id, title, memo, mon, tue, wed, thu, fri, sat, sun,
+               notify_hour, notify_minute, tag_id
         FROM reminders
     </select>
 
     <select id="findById" resultType="jp.levtech.rookie.tutorial.model.Reminder">
-        SELECT id, title, memo, mon, tue, wed, thu, fri, sat, sun
+        SELECT id, title, memo, mon, tue, wed, thu, fri, sat, sun,
+               notify_hour, notify_minute, tag_id
         FROM reminders
         WHERE id = #{id}
     </select>
 
     <insert id="register">
-    INSERT INTO reminders (title, memo, mon, tue, wed, thu, fri, sat, sun,
-                           notify_hour, notify_minute)
-    VALUES (#{title}, #{memo}, #{mon}, #{tue}, #{wed}, #{thu}, #{fri}, #{sat}, #{sun},
-            #{notifyHour}, #{notifyMinute})
-</insert>
+        INSERT INTO reminders (title, memo, mon, tue, wed, thu, fri, sat, sun,
+                               notify_hour, notify_minute, tag_id)
+        VALUES (#{title}, #{memo}, #{mon}, #{tue}, #{wed}, #{thu}, #{fri}, #{sat}, #{sun},
+                #{notifyHour}, #{notifyMinute}, #{tagId})
+    </insert>
 
     <update id="update">
         UPDATE reminders
@@ -32,7 +34,10 @@
             thu = #{thu},
             fri = #{fri},
             sat = #{sat},
-            sun = #{sun}
+            sun = #{sun},
+            notify_hour = #{notifyHour},
+            notify_minute = #{notifyMinute},
+            tag_id = #{tagId}
         WHERE id = #{id}
     </update>
 

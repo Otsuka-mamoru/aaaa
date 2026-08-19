@@ -21,4 +21,5 @@ public class ReminderForm {
     private boolean sun;
     private Integer notifyHour;    
     private Integer notifyMinute;  
+    private Integer tagId;
 }

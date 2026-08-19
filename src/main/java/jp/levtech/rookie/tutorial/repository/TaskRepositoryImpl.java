@@ -51,6 +51,10 @@ public class TaskRepositoryImpl implements TaskRepository {
     public List<Todo> findByMonth(String yearMonth) {
         return taskMapper.findByMonth(yearMonth);
     }
+    @Override
+    public void clearReminderId(int reminderId) {
+        taskMapper.clearReminderId(reminderId);
+    }
     
 
 }

@@ -3,40 +3,86 @@
 <head>
   <meta charset="UTF-8">
   <title>リマインドメモ一覧</title>
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-  <h1>リマインドメモ一覧</h1>
+<div style="padding: 20px; max-width: 800px; margin: 0 auto;">
 
-  <a href="/reminder/new">＋ 新規作成</a><br>
-  <a href="/">← カレンダーに戻る</a>
+  <!-- ヘッダー -->
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <a href="/"
+         style="text-decoration:none; color:#4a90e2; font-size:14px; padding:4px 12px; border:1px solid #4a90e2; border-radius:20px;">
+        ← カレンダーに戻る
+      </a>
+      <h1 style="font-size:20px; font-weight:500; color:#2c3e50;">リマインドメモ一覧</h1>
+    </div>
+    <a href="/reminder/new"
+       style="text-decoration:none; color:#fff; background:#4a90e2; padding:8px 20px; border-radius:8px; font-size:14px;">
+      ＋ 新規作成
+    </a>
+  </div>
 
-  <p th:if="${reminders.isEmpty()}">リマインドメモはありません</p>
+  <!-- リスト -->
+  <div style="background:#fff; border-radius:12px; padding:16px; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
 
-  <table border="1">
-    <tr>
-      <th>タイトル</th>
-      <th>メモ</th>
-      <th>月</th><th>火</th><th>水</th><th>木</th><th>金</th><th>土</th><th>日</th>
-      <th>操作</th>
-    </tr>
-    <tr th:each="reminder : ${reminders}">
-      <td th:text="${reminder.title}"></td>
-      <td th:text="${reminder.memo}"></td>
-      <td th:text="${reminder.mon} ? '✓' : ''"></td>
-      <td th:text="${reminder.tue} ? '✓' : ''"></td>
-      <td th:text="${reminder.wed} ? '✓' : ''"></td>
-      <td th:text="${reminder.thu} ? '✓' : ''"></td>
-      <td th:text="${reminder.fri} ? '✓' : ''"></td>
-      <td th:text="${reminder.sat} ? '✓' : ''"></td>
-      <td th:text="${reminder.sun} ? '✓' : ''"></td>
-      <td>
-        <a th:href="@{/reminder/edit(id=${reminder.id})}">編集</a>
-        <form th:action="@{/reminder/delete}" method="post" style="display:inline">
-          <input type="hidden" name="id" th:value="${reminder.id}">
-          <button type="submit">削除</button>
-        </form>
-      </td>
-    </tr>
-  </table>
+    <p th:if="${reminders.isEmpty()}"
+       style="color:#aaa; font-size:14px; text-align:center; padding:20px 0;">
+      リマインドメモはありません
+    </p>
+
+    <div th:each="reminder : ${reminders}"
+         style="padding:16px 0; border-bottom:1px solid #f0f0f0;">
+
+      <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:12px;">
+
+        <!-- 左側：タイトル・メモ・曜日 -->
+        <div style="flex:1;">
+          <p style="font-size:16px; font-weight:500; color:#2c3e50; margin-bottom:4px;"
+             th:text="${reminder.title}"></p>
+          <p style="font-size:13px; color:#888; margin-bottom:8px;"
+             th:text="${reminder.memo != null and reminder.memo != ''} ? ${reminder.memo} : 'メモなし'"></p>
+
+          <!-- 曜日バッジ -->
+          <div style="display:flex; gap:4px; flex-wrap:wrap;">
+            <span th:if="${reminder.mon}"
+                  style="font-size:11px; padding:2px 8px; border-radius:12px; background:#e8f4fd; color:#4a90e2;">月</span>
+            <span th:if="${reminder.tue}"
+                  style="font-size:11px; padding:2px 8px; border-radius:12px; background:#e8f4fd; color:#4a90e2;">火</span>
+            <span th:if="${reminder.wed}"
+                  style="font-size:11px; padding:2px 8px; border-radius:12px; background:#e8f4fd; color:#4a90e2;">水</span>
+            <span th:if="${reminder.thu}"
+                  style="font-size:11px; padding:2px 8px; border-radius:12px; background:#e8f4fd; color:#4a90e2;">木</span>
+            <span th:if="${reminder.fri}"
+                  style="font-size:11px; padding:2px 8px; border-radius:12px; background:#e8f4fd; color:#4a90e2;">金</span>
+            <span th:if="${reminder.sat}"
+                  style="font-size:11px; padding:2px 8px; border-radius:12px; background:#e8f4fd; color:#4a90e2;">土</span>
+            <span th:if="${reminder.sun}"
+                  style="font-size:11px; padding:2px 8px; border-radius:12px; background:#e8f4fd; color:#4a90e2;">日</span>
+
+            <!-- 通知時間 -->
+            <span th:if="${reminder.notifyHour != null}"
+                  style="font-size:11px; padding:2px 8px; border-radius:12px; background:#f0f0f0; color:#888;"
+                  th:text="${reminder.notifyHour} + '時' + ${reminder.notifyMinute} + '分'">
+            </span>
+          </div>
+        </div>
+
+        <!-- 右側：操作ボタン -->
+        <div style="display:flex; gap:8px; flex-shrink:0;">
+          <a th:href="@{/reminder/edit(id=${reminder.id})}"
+             style="text-decoration:none; color:#4a90e2; border:1px solid #4a90e2; padding:6px 14px; border-radius:6px; font-size:13px;">
+            編集
+          </a>
+          <a th:href="@{/reminder/delete-confirm(id=${reminder.id})}"
+             style="text-decoration:none; color:#e74c3c; border:1px solid #e74c3c; padding:6px 14px; border-radius:6px; font-size:13px;">
+            削除
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
 </body>
 </html>

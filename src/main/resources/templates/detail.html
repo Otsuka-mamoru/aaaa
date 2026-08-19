@@ -3,31 +3,85 @@
 <head>
   <meta charset="UTF-8">
   <title>ToDo詳細</title>
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-  <h1>ToDo詳細</h1>
+<div style="padding: 20px; max-width: 600px; margin: 0 auto;">
 
-  <p><strong>日付：</strong>
-    <span th:text="${todo.date}"></span></p>
-  <p><strong>タイトル：</strong>
-    <span th:text="${todo.title}"></span></p>
-  <p><strong>メモ：</strong>
-    <span th:text="${todo.memo}"></span></p>
-  <p><strong>タグ：</strong>
-    <span th:if="${tag != null}"
-          th:text="${tag.name} ?: ${tag.color}"
-          th:style="'color:' + ${tag.color}"></span>
-    <span th:if="${tag == null}">なし</span>
-  </p>
-  <p><strong>通知時間：</strong>
-    <span th:if="${todo.notifyHour != null and todo.notifyMinute != null}"
-          th:text="${todo.notifyHour} + '時' + ${todo.notifyMinute} + '分'">
-    </span>
-    <span th:if="${todo.notifyHour == null}">未設定</span>
-  </p>
+  <!-- ヘッダー -->
+  <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
+    <a th:href="@{/todo(date=${todo.date})}"
+       style="text-decoration:none; color:#4a90e2; font-size:14px; padding:4px 12px; border:1px solid #4a90e2; border-radius:20px;">
+      ← 戻る
+    </a>
+    <h1 style="font-size:20px; font-weight:500; color:#2c3e50;">ToDo詳細</h1>
+  </div>
 
-  <a th:if="${todo.reminderId != null}"
-     th:href="@{/reminder/edit(id=${todo.reminderId})}">リマインドアラームを変更する</a>
-  <a th:href="@{/todo(date=${todo.date})}">← ToDoリストに戻る</a>
+  <!-- カード -->
+  <div style="background:#fff; border-radius:12px; padding:24px; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+
+    <!-- タグの色帯 -->
+    <div th:if="${tag != null}"
+         th:style="'height:6px; border-radius:6px; margin-bottom:20px; background-color:' + ${tag.color}">
+    </div>
+    <div th:if="${tag == null}"
+         style="height:6px; border-radius:6px; margin-bottom:20px; background-color:#ddd">
+    </div>
+
+    <!-- 日付 -->
+    <div style="margin-bottom:16px;">
+      <span style="font-size:12px; color:#888; display:block; margin-bottom:4px;">日付</span>
+      <span th:text="${todo.date}" style="font-size:15px; color:#2c3e50;"></span>
+    </div>
+
+    <!-- タイトル -->
+    <div style="margin-bottom:16px;">
+      <span style="font-size:12px; color:#888; display:block; margin-bottom:4px;">タイトル</span>
+      <span th:text="${todo.title}" style="font-size:18px; font-weight:500; color:#2c3e50;"></span>
+    </div>
+
+    <!-- メモ -->
+    <div style="margin-bottom:16px;">
+      <span style="font-size:12px; color:#888; display:block; margin-bottom:4px;">メモ</span>
+      <span th:text="${todo.memo != null and todo.memo != ''} ? ${todo.memo} : 'なし'"
+            style="font-size:15px; color:#2c3e50;"></span>
+    </div>
+
+    <!-- タグ -->
+    <div style="margin-bottom:16px;">
+      <span style="font-size:12px; color:#888; display:block; margin-bottom:4px;">タグ</span>
+      <span th:if="${tag != null}"
+            th:text="${tag.name} ?: ${tag.color}"
+            th:style="'font-size:13px; padding:4px 12px; border-radius:20px; color:#fff; background-color:' + ${tag.color}">
+      </span>
+      <span th:if="${tag == null}" style="font-size:15px; color:#2c3e50;">なし</span>
+    </div>
+
+    <!-- 通知時間 -->
+    <div style="margin-bottom:24px;">
+      <span style="font-size:12px; color:#888; display:block; margin-bottom:4px;">通知時間</span>
+      <span th:if="${todo.notifyHour != null and todo.notifyMinute != null}"
+            th:text="${todo.notifyHour} + '時' + ${todo.notifyMinute} + '分'"
+            style="font-size:15px; color:#2c3e50;">
+      </span>
+      <span th:if="${todo.notifyHour == null}"
+            style="font-size:15px; color:#2c3e50;">未設定</span>
+    </div>
+
+    <!-- ボタン -->
+    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+      <a th:href="@{/todo/edit(id=${todo.id})}"
+         style="text-decoration:none; color:#fff; background:#4a90e2; padding:8px 20px; border-radius:8px; font-size:13px;">
+        編集
+      </a>
+      <a th:if="${todo.reminderId != null}"
+         th:href="@{/reminder/edit(id=${todo.reminderId})}"
+         style="text-decoration:none; color:#4a90e2; border:1px solid #4a90e2; padding:8px 20px; border-radius:8px; font-size:13px;">
+        リマインドアラームを変更する
+      </a>
+    </div>
+
+  </div>
+</div>
 </body>
 </html>

@@ -9,7 +9,8 @@ import jp.levtech.rookie.tutorial.model.Todo;
 import jp.levtech.rookie.tutorial.repository.mybatis.TaskMapper;
 
 /**
- * タスクをデータベースで管理するリポジトリ
+ * タスクをデータベースで管理するリポジ
+ * トリ
  */
 @Repository
 @Primary
@@ -81,5 +82,9 @@ public class DatabaseTaskRepositoryImpl implements TaskRepository {
     @Override
     public List<Todo> findByMonth(String yearMonth) {
         return taskMapper.findByMonth(yearMonth);
+    }
+    @Override
+    public void clearReminderId(int reminderId) {
+        taskMapper.clearReminderId(reminderId);
     }
 }

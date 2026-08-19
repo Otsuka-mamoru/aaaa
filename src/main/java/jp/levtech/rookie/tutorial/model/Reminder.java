@@ -21,4 +21,5 @@ public class Reminder {
  // 時間設定用
     private Integer notifyHour;
     private Integer notifyMinute;
+    private Integer tagId;
 }

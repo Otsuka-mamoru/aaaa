@@ -4,6 +4,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -42,7 +43,7 @@ public class TodoController {
         this.reminderRepository = reminderRepository;
         this.tagRepository = tagRepository;
     }
-
+//カレンダー
     @GetMapping("/")
     public String calender(
             @RequestParam(defaultValue = "0") int year,
@@ -72,12 +73,20 @@ public class TodoController {
                 taggedDates.add(todo.getDate());
             }
         }
+//タグカラー
+        Map<Integer, String> tagColorMap = new HashMap<>();
+        tagRepository.findAll().forEach(tag -> tagColorMap.put(tag.getId(), tag.getColor()));
+        model.addAttribute("tagColorMap", tagColorMap);
 
         // 月全体のToDoを日付ごとにグループ化
         List<Todo> monthTodos = taskRepository.findByMonth(
                 String.format("%04d-%02d", year, month));
         Map<String, List<Todo>> todosByDate = monthTodos.stream()
                 .collect(Collectors.groupingBy(Todo::getDate));
+     // デバッグ用ログ
+        System.out.println("月: " + String.format("%04d-%02d", year, month));
+        System.out.println("monthTodos件数: " + monthTodos.size());
+        System.out.println("todosByDate: " + todosByDate);
 
         CalendarModel calendarModel = new CalendarModel(
                 year, month,
